@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jep.org/schemas/jep-signature-0.6.schema.json",
+  "title": "JEP Signature Container",
+  "oneOf": [
+    {
+      "type": "string",
+      "description": "Detached JWS Compact Serialization"
+    },
+    {
+      "type": "object",
+      "description": "Detached JWS JSON Serialization or registered signature container"
+    }
+  ]
+}

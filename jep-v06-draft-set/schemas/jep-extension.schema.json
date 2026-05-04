@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jep.org/schemas/jep-extension-0.6.schema.json",
+  "title": "JEP Extension Container",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object"
+  }
+}

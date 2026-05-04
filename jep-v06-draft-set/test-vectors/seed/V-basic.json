@@ -1,0 +1,19 @@
+{
+  "jep": "1",
+  "verb": "V",
+  "who": "did:example:verifier-123",
+  "when": 1742345700,
+  "what": {
+    "claim": "verified",
+    "verification_scope": [
+      "syntax",
+      "cryptographic",
+      "actor_binding"
+    ],
+    "result": "pass"
+  },
+  "nonce": "4d0e9f80-3333-4abc-9def-123456789abc",
+  "aud": "https://platform.example.com",
+  "ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "sig": "PLACEHOLDER_DETACHED_JWS"
+}

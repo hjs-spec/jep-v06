@@ -1,0 +1,11 @@
+{
+  "name": "hjs-archive-reference-valid",
+  "profile": "jep-profile:hjs-archive:0",
+  "event_ref": "../valid/J-basic-signed.json",
+  "receipt_time": 1742345800,
+  "archive_ref": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "expected": {
+    "valid": true,
+    "profile_level": 3
+  }
+}

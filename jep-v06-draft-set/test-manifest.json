@@ -1,0 +1,189 @@
+{
+  "suite": "jep-v0.6-conformance-seed",
+  "version": "0.6.0-seed",
+  "keys": "test-vectors/valid/public-keys.json",
+  "cases": [
+    {
+      "name": "J-basic-signed",
+      "path": "test-vectors/valid/J-basic-signed.json",
+      "expected_valid": true,
+      "mode": "archival",
+      "minimum_level": 1
+    },
+    {
+      "name": "D-basic-signed",
+      "path": "test-vectors/valid/D-basic-signed.json",
+      "expected_valid": true,
+      "mode": "archival",
+      "minimum_level": 1
+    },
+    {
+      "name": "T-basic-signed",
+      "path": "test-vectors/valid/T-basic-signed.json",
+      "expected_valid": true,
+      "mode": "archival",
+      "minimum_level": 1
+    },
+    {
+      "name": "V-basic-signed",
+      "path": "test-vectors/valid/V-basic-signed.json",
+      "expected_valid": true,
+      "mode": "archival",
+      "minimum_level": 1
+    },
+    {
+      "name": "invalid-signature",
+      "path": "test-vectors/invalid/invalid-signature.json",
+      "expected_valid": false,
+      "expected_error": "ERR_SIGNATURE_INVALID",
+      "mode": "archival"
+    },
+    {
+      "name": "ref-hash-mismatch",
+      "path": "test-vectors/invalid/ref-hash-mismatch.json",
+      "expected_valid": false,
+      "expected_error": "ERR_REF_UNRESOLVED",
+      "mode": "archival"
+    },
+    {
+      "name": "unknown-critical-extension",
+      "path": "test-vectors/invalid/unknown-critical-extension.json",
+      "expected_valid": false,
+      "expected_error": "ERR_UNKNOWN_CRITICAL_EXTENSION",
+      "mode": "archival"
+    },
+    {
+      "name": "did-vc-expired-credential",
+      "path": "test-vectors/profiles/did-vc-expired-credential.json",
+      "expected_valid": "profile-specific",
+      "mode": "profile"
+    },
+    {
+      "name": "did-vc-valid",
+      "path": "test-vectors/profiles/did-vc-valid.json",
+      "expected_valid": "profile-specific",
+      "mode": "profile"
+    },
+    {
+      "name": "hjs-archive-reference-valid",
+      "path": "test-vectors/profiles/hjs-archive-reference-valid.json",
+      "expected_valid": "profile-specific",
+      "mode": "profile"
+    },
+    {
+      "name": "jac-chain-valid",
+      "path": "test-vectors/profiles/jac-chain-valid.json",
+      "expected_valid": "profile-specific",
+      "mode": "profile"
+    },
+    {
+      "name": "oauth-context-valid",
+      "path": "test-vectors/profiles/oauth-context-valid.json",
+      "expected_valid": "profile-specific",
+      "mode": "profile"
+    },
+    {
+      "name": "rats-attestation-valid",
+      "path": "test-vectors/profiles/rats-attestation-valid.json",
+      "expected_valid": "profile-specific",
+      "mode": "profile"
+    },
+    {
+      "name": "x509-valid",
+      "path": "test-vectors/profiles/x509-valid.json",
+      "expected_valid": "profile-specific",
+      "mode": "profile"
+    },
+    {
+      "name": "duplicate-member",
+      "path": "test-vectors/invalid/duplicate-member.json",
+      "expected_valid": false,
+      "expected_error": "ERR_DUPLICATE_MEMBER",
+      "mode": "archival"
+    },
+    {
+      "name": "nonce-replay",
+      "path": "test-vectors/invalid/nonce-replay.json",
+      "expected_valid": false,
+      "expected_error": "ERR_NONCE_REPLAY",
+      "mode": "archival"
+    },
+    {
+      "name": "terminated-delegation-reused",
+      "path": "test-vectors/invalid/terminated-delegation-reused.json",
+      "expected_valid": false,
+      "expected_error": "ERR_TERMINATED_REFERENCE_REUSED",
+      "mode": "archival"
+    },
+    {
+      "name": "extension-conflict",
+      "path": "test-vectors/invalid/extension-conflict.json",
+      "expected_valid": false,
+      "expected_error": "ERR_EXTENSION_CONFLICT",
+      "mode": "archival"
+    },
+    {
+      "name": "algorithm-downgrade",
+      "path": "test-vectors/invalid/algorithm-downgrade.json",
+      "expected_valid": false,
+      "expected_error": "ERR_UNSUPPORTED_SIGNATURE_ALG",
+      "mode": "archival"
+    },
+    {
+      "name": "expired-credential",
+      "path": "test-vectors/invalid/expired-credential.json",
+      "expected_valid": false,
+      "expected_error": "ERR_POLICY_REJECTED",
+      "mode": "archival"
+    },
+    {
+      "name": "did-vc-valid-expanded",
+      "path": "test-vectors/profiles/did-vc-valid-expanded.json",
+      "expected_valid": true,
+      "expected_error": null,
+      "mode": "profile"
+    },
+    {
+      "name": "hjs-redacted-archive-example",
+      "path": "test-vectors/profiles/hjs-redacted-archive-example.json",
+      "expected_valid": true,
+      "expected_error": null,
+      "mode": "profile"
+    },
+    {
+      "name": "jac-causal-chain-expanded",
+      "path": "test-vectors/profiles/jac-causal-chain-expanded.json",
+      "expected_valid": true,
+      "expected_error": null,
+      "mode": "profile"
+    },
+    {
+      "name": "unsupported-jep-version",
+      "path": "test-vectors/invalid/unsupported-jep-version.json",
+      "expected_valid": false,
+      "expected_error": "ERR_UNSUPPORTED_JEP_VERSION",
+      "mode": "archival"
+    },
+    {
+      "name": "unknown-verb",
+      "path": "test-vectors/invalid/unknown-verb.json",
+      "expected_valid": false,
+      "expected_error": "ERR_UNKNOWN_VERB",
+      "mode": "archival"
+    },
+    {
+      "name": "missing-required-field",
+      "path": "test-vectors/invalid/missing-required-field.json",
+      "expected_valid": false,
+      "expected_error": "ERR_MISSING_REQUIRED_FIELD",
+      "mode": "archival"
+    },
+    {
+      "name": "invalid-timestamp",
+      "path": "test-vectors/invalid/invalid-timestamp.json",
+      "expected_valid": false,
+      "expected_error": "ERR_INVALID_TIMESTAMP",
+      "mode": "archival"
+    }
+  ]
+}

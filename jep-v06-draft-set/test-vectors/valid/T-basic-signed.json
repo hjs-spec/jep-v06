@@ -1,0 +1,25 @@
+{
+  "name": "T-basic-signed",
+  "event": {
+    "jep": "1",
+    "verb": "T",
+    "who": "did:example:human-123",
+    "when": 1742345690,
+    "what": {
+      "claim": "terminate",
+      "target": "sha256:9142624f4d506d3eac41b63ddb0549337fe655b9466edd4b748d03baaf32f9a5",
+      "termination_scope": "delegation"
+    },
+    "nonce": "3c9d8e7f-2222-4abc-9def-123456789abc",
+    "aud": "https://platform.example.com",
+    "ref": "sha256:9142624f4d506d3eac41b63ddb0549337fe655b9466edd4b748d03baaf32f9a5",
+    "sig": "eyJhbGciOiJFZDI1NTE5Iiwia2lkIjoiZGlkOmV4YW1wbGU6aHVtYW4tMTIzI2tleS0xIn0..ojIlNrRhUfaQbCx2au7pwHH6qLVmbzpB6Ux0nZNtCe2Mux8set2J0g-w6O4B5AWXBSFJ--83T-k3OJwbX9vKBA"
+  },
+  "canonical_unsigned_payload": "{\"aud\":\"https://platform.example.com\",\"jep\":\"1\",\"nonce\":\"3c9d8e7f-2222-4abc-9def-123456789abc\",\"ref\":\"sha256:9142624f4d506d3eac41b63ddb0549337fe655b9466edd4b748d03baaf32f9a5\",\"verb\":\"T\",\"what\":{\"claim\":\"terminate\",\"target\":\"sha256:9142624f4d506d3eac41b63ddb0549337fe655b9466edd4b748d03baaf32f9a5\",\"termination_scope\":\"delegation\"},\"when\":1742345690,\"who\":\"did:example:human-123\"}",
+  "event_hash": "sha256:85294e6dc45304e70630cc240a35ddc9895a1e7508dacf89ff8be52879a0a253",
+  "expected": {
+    "valid": true,
+    "minimum_level": 1,
+    "mode": "archival"
+  }
+}

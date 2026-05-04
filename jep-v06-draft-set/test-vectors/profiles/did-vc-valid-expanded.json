@@ -1,0 +1,16 @@
+{
+  "name": "did-vc-valid-expanded",
+  "profile": "jep-profile:did-vc:0",
+  "event_ref": "../valid/J-basic-signed.json",
+  "did_document_ref": "../../examples/profiles/did-document-agent-789.json",
+  "credential_ref": "../../examples/profiles/vc-actor-role.json",
+  "checks": [
+    "did-resolution",
+    "verification-method-binding",
+    "credential-subject-binding"
+  ],
+  "expected": {
+    "valid": true,
+    "profile_level": 2
+  }
+}

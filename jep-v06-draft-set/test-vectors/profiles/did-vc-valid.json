@@ -1,0 +1,10 @@
+{
+  "name": "did-vc-valid",
+  "profile": "jep-profile:did-vc:0",
+  "event_ref": "../valid/J-basic-signed.json",
+  "credential_reference": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "expected": {
+    "valid": true,
+    "profile_level": 2
+  }
+}

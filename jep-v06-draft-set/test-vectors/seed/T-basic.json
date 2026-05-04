@@ -1,0 +1,15 @@
+{
+  "jep": "1",
+  "verb": "T",
+  "who": "did:example:human-123",
+  "when": 1742345690,
+  "what": {
+    "claim": "terminate",
+    "target": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "termination_scope": "delegation"
+  },
+  "nonce": "3c9d8e7f-2222-4abc-9def-123456789abc",
+  "aud": "https://platform.example.com",
+  "ref": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "sig": "PLACEHOLDER_DETACHED_JWS"
+}

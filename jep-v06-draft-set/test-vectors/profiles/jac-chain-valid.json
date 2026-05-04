@@ -1,0 +1,10 @@
+{
+  "name": "jac-chain-valid",
+  "profile": "jep-profile:jac-chain:0",
+  "chain_ref": "../valid/delegation-verification-termination-chain.jsonl",
+  "observed_log_assumption": "partial",
+  "expected": {
+    "valid": true,
+    "profile_level": 3
+  }
+}

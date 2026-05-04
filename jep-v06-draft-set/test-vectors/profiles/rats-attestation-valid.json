@@ -1,0 +1,10 @@
+{
+  "name": "rats-attestation-valid",
+  "profile": "jep-profile:rats:0",
+  "event_ref": "../valid/J-basic-signed.json",
+  "attestation_evidence_ref": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "expected": {
+    "valid": true,
+    "profile_level": 4
+  }
+}

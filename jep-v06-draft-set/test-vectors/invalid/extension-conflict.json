@@ -1,0 +1,30 @@
+{
+  "name": "extension-conflict",
+  "event": {
+    "jep": "1",
+    "verb": "J",
+    "who": "did:example:agent-789",
+    "when": 1742345678,
+    "what": "sha256:aa55ad4393538f14e6b4961de1a29216eed93517cb6c2631a56a5ee75edb3b7a",
+    "nonce": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "aud": "https://platform.example.com",
+    "ref": null,
+    "sig": "eyJhbGciOiJFZDI1NTE5Iiwia2lkIjoiZGlkOmV4YW1wbGU6YWdlbnQtNzg5I2tleS0xIn0..i-KcYtcoSfsJeTJRd8wlvbVSMAKZyStu8ureSgaDQDm-vrMuIRVqzew9j51aPok9JOCo5QlaCQnVYdX5v162CQ",
+    "ext": {
+      "x-conflict-a": {
+        "requires": "A"
+      },
+      "x-conflict-b": {
+        "requires": "not-A"
+      }
+    },
+    "ext_crit": [
+      "x-conflict-a",
+      "x-conflict-b"
+    ]
+  },
+  "expected": {
+    "valid": false,
+    "error": "ERR_EXTENSION_CONFLICT"
+  }
+}

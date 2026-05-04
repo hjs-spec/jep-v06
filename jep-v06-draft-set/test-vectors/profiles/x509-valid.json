@@ -1,0 +1,10 @@
+{
+  "name": "x509-valid",
+  "profile": "jep-profile:x509:0",
+  "event_ref": "../valid/J-basic-signed.json",
+  "certificate_chain_ref": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "expected": {
+    "valid": true,
+    "profile_level": 2
+  }
+}

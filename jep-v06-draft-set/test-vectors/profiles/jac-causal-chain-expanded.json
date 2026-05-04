@@ -1,0 +1,27 @@
+{
+  "name": "jac-causal-chain-expanded",
+  "profile": "jep-profile:jac-chain:0",
+  "chain_ref": "../valid/delegation-verification-termination-chain.jsonl",
+  "observed_log_assumption": "partial",
+  "causal_edges": [
+    {
+      "from": "D-basic-signed",
+      "to": "J-basic-signed",
+      "type": "delegation-enables-judgment"
+    },
+    {
+      "from": "J-basic-signed",
+      "to": "V-basic-signed",
+      "type": "judgment-verified-by"
+    },
+    {
+      "from": "D-basic-signed",
+      "to": "T-basic-signed",
+      "type": "delegation-terminated-by"
+    }
+  ],
+  "expected": {
+    "valid": true,
+    "profile_level": 3
+  }
+}

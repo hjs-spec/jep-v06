@@ -1,0 +1,19 @@
+{
+  "jep": "1",
+  "verb": "D",
+  "who": "did:example:human-123",
+  "when": 1742345681,
+  "what": {
+    "claim": "delegate",
+    "delegatee": "did:example:agent-789",
+    "scope": "summarize-document",
+    "constraints": [
+      "no-external-send"
+    ],
+    "context": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "nonce": "2b8c7d6e-1111-4abc-9def-123456789abc",
+  "aud": "https://platform.example.com",
+  "ref": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "sig": "PLACEHOLDER_DETACHED_JWS"
+}

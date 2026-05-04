@@ -1,0 +1,18 @@
+{
+  "name": "hjs-redacted-archive-example",
+  "profile": "jep-profile:hjs-archive:0",
+  "event_ref": "../valid/J-basic-signed.json",
+  "receipt_time": 1742345800,
+  "archive_time": 1742345900,
+  "redaction_manifest": {
+    "redacted_fields": [
+      "what.evidence.raw_text"
+    ],
+    "retained_hash": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "disclosure_mode": "audience-bound"
+  },
+  "expected": {
+    "valid": true,
+    "profile_level": 3
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "terminated-delegation-reused",
+  "chain_ref": "../valid/delegation-verification-termination-chain.jsonl",
+  "post_termination_event": {
+    "ref": "sha256:9142624f4d506d3eac41b63ddb0549337fe655b9466edd4b748d03baaf32f9a5"
+  },
+  "expected": {
+    "valid": false,
+    "error": "ERR_TERMINATED_REFERENCE_REUSED"
+  }
+}

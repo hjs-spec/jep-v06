@@ -1,0 +1,10 @@
+{
+  "name": "oauth-context-valid",
+  "profile": "jep-profile:oauth-oidc:0",
+  "event_ref": "../valid/D-basic-signed.json",
+  "authorization_context_ref": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "expected": {
+    "valid": true,
+    "profile_level": 4
+  }
+}

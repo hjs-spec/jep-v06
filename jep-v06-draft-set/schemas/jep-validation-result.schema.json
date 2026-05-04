@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jep.org/schemas/jep-validation-result-0.6.schema.json",
+  "title": "JEP Validation Result",
+  "type": "object",
+  "required": [
+    "valid",
+    "level",
+    "mode",
+    "profile",
+    "warnings",
+    "errors"
+  ],
+  "properties": {
+    "valid": {
+      "type": "boolean"
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "mode": {
+      "type": "string"
+    },
+    "profile": {
+      "type": "string"
+    },
+    "conformance_class": {
+      "type": "string"
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "event_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-z0-9-]+:[0-9a-f]+$"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      }
+    }
+  },
+  "$defs": {
+    "diagnostic": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "recoverable": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

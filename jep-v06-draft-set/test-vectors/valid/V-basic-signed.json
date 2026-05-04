@@ -1,0 +1,29 @@
+{
+  "name": "V-basic-signed",
+  "event": {
+    "jep": "1",
+    "verb": "V",
+    "who": "did:example:verifier-123",
+    "when": 1742345700,
+    "what": {
+      "claim": "verified",
+      "verification_scope": [
+        "syntax",
+        "cryptographic",
+        "actor_binding"
+      ],
+      "result": "pass"
+    },
+    "nonce": "4d0e9f80-3333-4abc-9def-123456789abc",
+    "aud": "https://platform.example.com",
+    "ref": "sha256:f232a7c8e33b42bb1cf848f6eb3cef553d88aa2c01a9547fae25ef02c73903c2",
+    "sig": "eyJhbGciOiJFZDI1NTE5Iiwia2lkIjoiZGlkOmV4YW1wbGU6dmVyaWZpZXItMTIzI2tleS0xIn0..W3A6t5jo3yhI5IunHh6XT_KOAqNEb9_itYyjCE5-oYIvIlktWPAhUcxgQP_MLQcsKD0ymrmq-4mVKChzkyKECA"
+  },
+  "canonical_unsigned_payload": "{\"aud\":\"https://platform.example.com\",\"jep\":\"1\",\"nonce\":\"4d0e9f80-3333-4abc-9def-123456789abc\",\"ref\":\"sha256:f232a7c8e33b42bb1cf848f6eb3cef553d88aa2c01a9547fae25ef02c73903c2\",\"verb\":\"V\",\"what\":{\"claim\":\"verified\",\"result\":\"pass\",\"verification_scope\":[\"syntax\",\"cryptographic\",\"actor_binding\"]},\"when\":1742345700,\"who\":\"did:example:verifier-123\"}",
+  "event_hash": "sha256:1f02cecab1d04ce5253bd23b8886242602851407e96a3b1e269b1cec2b3bcf34",
+  "expected": {
+    "valid": true,
+    "minimum_level": 1,
+    "mode": "archival"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "JEPActorRoleCredential"
+  ],
+  "issuer": "did:example:issuer-001",
+  "validFrom": "2026-05-04T00:00:00Z",
+  "credentialSubject": {
+    "id": "did:example:agent-789",
+    "role": "research-agent",
+    "authorization_scope": [
+      "summarize-document"
+    ]
+  }
+}

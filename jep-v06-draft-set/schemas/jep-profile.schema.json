@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jep.org/schemas/jep-profile-0.6.schema.json",
+  "title": "JEP Profile Descriptor",
+  "type": "object",
+  "required": [
+    "profile_id",
+    "name",
+    "version",
+    "supported_jep_core"
+  ],
+  "properties": {
+    "profile_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "supported_jep_core": {
+      "type": "string"
+    },
+    "actor_identifier_forms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "key_resolution": {
+      "type": "string"
+    },
+    "algorithm_policy": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "validation_level_impact": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 4
+      }
+    },
+    "security_considerations": {
+      "type": "string"
+    },
+    "privacy_considerations": {
+      "type": "string"
+    }
+  }
+}

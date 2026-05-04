@@ -1,0 +1,20 @@
+{
+  "actor": {
+    "kty": "OKP",
+    "crv": "Ed25519",
+    "kid": "did:example:agent-789#key-1",
+    "x": "A6EHv_POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg"
+  },
+  "verifier": {
+    "kty": "OKP",
+    "crv": "Ed25519",
+    "kid": "did:example:verifier-123#key-1",
+    "x": "cSZR9FC6BbY4mLme9fe6RWMujiUn9_cVzWcexAJMxR4"
+  },
+  "human": {
+    "kty": "OKP",
+    "crv": "Ed25519",
+    "kid": "did:example:human-123#key-1",
+    "x": "Kay64UG8yvCyLhqU000LxzYeUm0L_hLIl5S8kyKWbdc"
+  }
+}

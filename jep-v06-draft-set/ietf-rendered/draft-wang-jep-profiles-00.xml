@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rfc version="3" category="exp" docName="draft-wang-jep-profiles-00" ipr="trust200902">
+  <front>
+    <title>JEP Profiles and Interoperability</title>
+    <seriesInfo name="Internet-Draft" value="draft-wang-jep-profiles-00"/>
+    <author initials="Y." surname="Wang" fullname="Yuqiang Wang">
+      <address><email>signal@humanjudgment.org</email><uri>https://github.com/hjs-spec</uri></address>
+    </author>
+    <date year="2026" month="May" day="4"/>
+    <abstract><t>This document defines optional trust profiles and interoperability
+bindings for the Judgment Event Protocol (JEP). JEP-Core defines the
+neutral event protocol. This document defines how actor identifiers,
+keys, credentials, authorization context, attestations, archival systems,
+and chain systems can be bound to JEP events without changing JEP-Core
+semantics.
+
+The profiles in this document are optional. A JEP-Core implementation
+MUST NOT require support for DID, VC, X.509, OAuth, RATS, blockchain
+anchoring, HJS, JAC, or any specific AI platform or agent framework.</t></abstract>
+  </front>
+  <middle>
+    <section numbered="true"><name>Trust Profiles and Optional Interoperability Bindings for JEP</name><t>### draft-wang-jep-profiles-00</t>
+<t>Author: Yuqiang Wang  
+Intended status: Experimental  
+Companion draft: draft-wang-jep-judgment-event-protocol-06</t>
+<t>---</t></section><section numbered="true"><name>Companion Drafts</name><t>This draft depends on `draft-wang-jep-judgment-event-protocol-06`.
+Conformance classes, schemas, test vectors, and reference-validator
+behavior are defined in `draft-wang-jep-conformance-00`.</t></section><section numbered="true"><name>1. Introduction</name><t>JEP-Core defines signed judgment events. It intentionally does not
+define a global identity, credential, authorization, attestation, legal,
+or archival framework.</t>
+<t>Operational deployments require profile-specific rules for resolving
+actors, binding signing keys, checking credentials, applying
+authorization context, validating attestations, preserving archival
+evidence, and composing chains. This document provides a structured
+profile model and optional profiles.</t>
+<t>---</t></section><section numbered="true"><name>2. Profile Principles</name><t>Profiles MUST follow these principles:</t>
+<t>1. A profile MUST NOT redefine JEP-Core event verbs.
+2. A profile MUST NOT redefine JEP-Core signature, event hash, or core
+   validation-level semantics.
+3. A profile MAY define actor identifier forms.
+4. A profile MAY define key-resolution mechanisms.
+5. A profile MAY define credential, attestation, authorization, archival,
+   or chain rules.
+6. A profile MUST declare security and privacy considerations.
+7. A profile MUST declare whether it affects validation levels.
+8. A profile MUST define failure mappings to JEP failure codes or
+   profile-specific codes.
+9. A profile SHOULD be independently implementable.
+10. A profile SHOULD avoid making global legal, policy, or factual
+    determinations unless it explicitly defines evidence rules.</t>
+<t>---</t></section><section numbered="true"><name>3. Trust Profile Model</name><t>A JEP trust profile defines how a verifier resolves and evaluates
+identity, key, actor-binding, algorithm, revocation, and historical
+validity.</t>
+<t>A trust profile specification MUST define:</t>
+<sourcecode><![CDATA[- profile identifier;
+- supported actor identifier forms;
+- supported key identifier forms;
+- key discovery mechanism;
+- binding rules between `who` and signing keys;
+- accepted algorithms;
+- downgrade policy;
+- key rotation handling;
+- revocation handling;
+- historical validation rules;
+- credential or attestation dependency, if any;
+- privacy considerations;
+- failure-code mapping;
+- conformance requirements.]]></sourcecode>
+<t>A trust profile MAY define profile-specific extensions, but those
+extensions MUST NOT redefine JEP-Core semantics.</t>
+<t>---</t></section><section numbered="true"><name>4. DID / VC Profile</name><t>### 4.1 Profile Identifier</t>
+<t>`jep-profile:did-vc:0`</t>
+<t>### 4.2 Scope</t>
+<t>This optional profile defines how JEP events MAY interoperate with
+Decentralized Identifiers (DIDs) and Verifiable Credentials (VCs).</t>
+<t>DID and VC support is OPTIONAL. JEP-Core implementations MUST NOT require
+DID or VC support.</t>
+<t>### 4.3 DID Binding</t>
+<t>When `who` is a DID, the profile MUST define:</t>
+<sourcecode><![CDATA[- supported DID methods;
+- DID document resolution process;
+- verification method selection;
+- key controller rules;
+- historical key validation;
+- DID document caching;
+- DID method failure handling;
+- revocation or deactivation handling.]]></sourcecode>
+<t>A verifier MUST reject a JEP event under this profile if the signing key
+cannot be bound to `who` according to the resolved DID document and
+profile policy.</t>
+<t>### 4.4 VC Binding</t>
+<t>A JEP event MAY reference a VC by:</t>
+<sourcecode><![CDATA[- digest;
+- URI;
+- embedded object;
+- Verifiable Presentation reference;
+- HJS archival reference.]]></sourcecode>
+<t>A VC MAY support claims about:</t>
+<sourcecode><![CDATA[- actor role;
+- organizational affiliation;
+- authorization scope;
+- certification;
+- delegation capability;
+- compliance status;
+- human reviewer qualification;
+- tool or model certification.]]></sourcecode>
+<t>VC validity MUST be evaluated separately from JEP event validity. A valid
+VC does not automatically make a JEP event valid. A valid JEP event does
+not automatically make a VC claim true.</t>
+<t>### 4.5 Validation Impact</t>
+<t>A verifier under the DID/VC profile SHOULD map successful DID and
+credential checks to Level 2 actor-binding or Level 4 policy validation,
+depending on the credential role.</t>
+<t>Credential-expired, credential-revoked, issuer-untrusted, or
+presentation-invalid conditions MUST be reported as profile failures.</t>
+<t>### 4.6 Security and Privacy</t>
+<t>DID resolution may reveal correlation metadata. VC references may reveal
+sensitive role, employment, certification, or authorization information.
+Digest references may be vulnerable to confirmation or dictionary
+attacks.</t>
+<t>---</t></section><section numbered="true"><name>5. X.509 / PKI Profile</name><t>### 5.1 Profile Identifier</t>
+<t>`jep-profile:x509:0`</t>
+<t>### 5.2 Scope</t>
+<t>This optional profile defines how X.509 certificates and PKI
+infrastructure MAY be used to bind `who` to a signing key.</t>
+<t>### 5.3 Requirements</t>
+<t>The profile MUST define:</t>
+<sourcecode><![CDATA[- certificate chain validation;
+- name-to-actor binding;
+- key usage and extended key usage requirements;
+- revocation checking;
+- certificate validity at event time;
+- archival validation behavior;
+- algorithm policy;
+- trust anchors.]]></sourcecode>
+<t>### 5.4 Validation Impact</t>
+<t>Successful certificate and actor binding checks MAY support Level 2
+actor-binding validation. Domain, regulatory, or organizational checks
+remain Level 4 policy validation.</t>
+<t>---</t></section><section numbered="true"><name>6. OAuth / OIDC Authorization Context Profile</name><t>### 6.1 Profile Identifier</t>
+<t>`jep-profile:oauth-oidc:0`</t>
+<t>### 6.2 Scope</t>
+<t>This optional profile defines how OAuth or OIDC context MAY be referenced
+by JEP events.</t>
+<t>OAuth or OIDC artifacts MAY support claims about:</t>
+<sourcecode><![CDATA[- authorization context;
+- client identity;
+- resource server;
+- subject;
+- consent or grant context;
+- token-binding evidence.]]></sourcecode>
+<t>### 6.3 Boundary</t>
+<t>A JEP event referencing OAuth context does not by itself prove that the
+underlying action was authorized. Authorization interpretation is
+profile-specific and policy-dependent.</t>
+<t>---</t></section><section numbered="true"><name>7. RATS / Attestation Profile</name><t>### 7.1 Profile Identifier</t>
+<t>`jep-profile:rats:0`</t>
+<t>### 7.2 Scope</t>
+<t>This optional profile defines how remote attestation evidence MAY be
+referenced by JEP events.</t>
+<t>Attestation evidence MAY support claims about:</t>
+<sourcecode><![CDATA[- runtime environment;
+- device identity;
+- model execution environment;
+- secure enclave or trusted execution context;
+- software measurement;
+- tool invocation environment.]]></sourcecode>
+<t>### 7.3 Boundary</t>
+<t>RATS evidence supports environment claims. It does not prove the factual
+correctness of a judgment.</t>
+<t>---</t></section><section numbered="true"><name>8. Local IAM Profile</name><t>### 8.1 Profile Identifier</t>
+<t>`jep-profile:local-iam:0`</t>
+<t>### 8.2 Scope</t>
+<t>This optional profile defines how enterprise identity and access
+management systems MAY bind local actor identifiers to signing keys.</t>
+<t>The profile MUST define:</t>
+<sourcecode><![CDATA[- local actor namespace;
+- key registry;
+- role mapping;
+- group or permission mapping;
+- revocation handling;
+- historical validation;
+- audit export format.]]></sourcecode>
+<t>---</t></section><section numbered="true"><name>9. HJS Archive and Privacy Profile</name><t>### 9.1 Profile Identifier</t>
+<t>`jep-profile:hjs-archive:0`</t>
+<t>### 9.2 Scope</t>
+<t>This optional profile defines how HJS-like systems MAY store, receive,
+archive, redact, disclose, and preserve JEP events and evidence.</t>
+<t>HJS manages:</t>
+<sourcecode><![CDATA[- receipt records;
+- archive-time metadata;
+- retention policy;
+- redaction policy;
+- selective disclosure;
+- privacy policy;
+- evidence lifecycle;
+- long-term verification context.]]></sourcecode>
+<t>HJS is a companion archive/privacy/evidence profile over JEP-Core, not
+a replacement protocol for JEP-Core.</t>
+<t>HJS MUST NOT redefine JEP-Core event semantics, signature semantics,
+event hash semantics, validation levels, or failure codes.</t>
+<t>### 9.3 Receipt and Archive Times</t>
+<t>HJS MAY add receipt time, archive time, or evidence custody metadata.
+These times are distinct from JEP `when`.</t>
+<t>### 9.4 Privacy</t>
+<t>HJS deployments SHOULD minimize disclosure and support access-controlled
+evidence stores, redacted logs, digest references, audience-bound
+disclosure, or selective-disclosure mechanisms.</t>
+<t>---</t></section><section numbered="true"><name>10. JAC Chain Profile</name><t>### 10.1 Profile Identifier</t>
+<t>`jep-profile:jac-chain:0`</t>
+<t>### 10.2 Scope</t>
+<t>This optional profile defines how JAC-like systems MAY compose JEP events
+into causality chains, responsibility chains, delegation paths,
+verification paths, and workflow accountability graphs.</t>
+<t>JAC is a companion causality/accountability-chain profile over
+JEP-Core, not a replacement protocol for JEP-Core.</t>
+<t>JAC MUST NOT redefine:</t>
+<sourcecode><![CDATA[- JEP event object;
+- JEP signature semantics;
+- event hash semantics;
+- validation levels;
+- failure-code semantics.]]></sourcecode>
+<t>### 10.3 Causal Boundary</t>
+<t>A JEP reference does not by itself imply causality. JAC defines causal
+interpretation over JEP events.</t>
+<t>A JAC chain result MUST declare:</t>
+<sourcecode><![CDATA[- observed-log assumption;
+- complete-log assumption, if any;
+- chain reconstruction method;
+- causal edge types;
+- termination interpretation;
+- verification-scope interpretation.]]></sourcecode>
+<t>### 10.4 Validation Impact</t>
+<t>JAC chain reconstruction MAY support Level 3 chain validation. Legal or
+organizational responsibility remains Level 4 policy validation.</t>
+<t>---</t></section><section numbered="true"><name>11. Blockchain Anchoring Profile</name><t>### 11.1 Profile Identifier</t>
+<t>`jep-profile:blockchain-anchor:0`</t>
+<t>### 11.2 Scope</t>
+<t>This optional profile defines how JEP event hashes MAY be anchored in a
+distributed ledger or transparency mechanism.</t>
+<t>Blockchain anchoring is OPTIONAL and MUST NOT be required for JEP-Core
+conformance.</t>
+<t>### 11.3 Boundary</t>
+<t>Anchoring may support timestamping or non-equivocation evidence. It does
+not prove the content of a JEP event is true, lawful, complete, or
+policy-compliant.</t>
+<t>---</t></section><section numbered="true"><name>12. AI Actor Profile</name><t>### 12.1 Profile Identifier</t>
+<t>`jep-profile:ai-actor:0`</t>
+<t>### 12.2 Scope</t>
+<t>This optional profile defines actor-identifier conventions for AI-native
+actors, including:</t>
+<sourcecode><![CDATA[- model actors;
+- agent actors;
+- tool actors;
+- service actors;
+- workflow actors;
+- session actors;
+- human-agent composites;
+- organization-agent composites.]]></sourcecode>
+<t>The profile MUST define how a signing key represents, controls, or
+attests to an AI actor.</t>
+<t>### 12.3 Boundary</t>
+<t>An AI actor identifier does not prove internal model state, intent,
+understanding, sentience, correctness, or factual truth.</t>
+<t>---</t></section><section numbered="true"><name>13. Profile Registration Template</name><t>A profile registration SHOULD include:</t>
+<sourcecode><![CDATA[- profile identifier;
+- profile name;
+- profile version;
+- description;
+- supported JEP-Core version;
+- actor identifier forms;
+- key resolution method;
+- credential or attestation dependencies;
+- algorithm policy;
+- validation-level impact;
+- failure-code mapping;
+- security considerations;
+- privacy considerations;
+- change controller;
+- reference implementation or test vectors, if available.]]></sourcecode>
+<t>---</t></section><section numbered="true"><name>14. Security Considerations</name><t>Profiles can expand the trust surface. A malicious or poorly specified
+profile can cause actor misbinding, algorithm downgrade, credential
+overclaim, excessive disclosure, or false policy conclusions.</t>
+<t>A profile MUST NOT present profile validity as global truth unless it
+defines external evidence rules.</t>
+<t>---</t></section><section numbered="true"><name>15. Privacy Considerations</name><t>Profiles can introduce sensitive identifiers, credentials, roles,
+organization relationships, location data, execution measurements, or
+workflow metadata. Profiles SHOULD support data minimization, digest
+references, access-controlled evidence, redaction, and selective
+disclosure.</t>
+<t>---</t></section><section numbered="true"><name>16. IANA / Registry Considerations</name><t>This draft requests or anticipates registries for:</t>
+<sourcecode><![CDATA[- JEP trust profile identifiers;
+- JEP optional profile identifiers;
+- JEP profile conformance classes;
+- profile-specific failure codes;
+- profile-specific verification scopes.]]></sourcecode>
+<t>---</t></section><section numbered="true"><name>17. Initial Profile Set</name><t>Initial optional profiles:</t>
+<sourcecode><![CDATA[| Profile | Identifier | Status |
+|---|---|---|
+| DID/VC | `jep-profile:did-vc:0` | Optional |
+| X.509/PKI | `jep-profile:x509:0` | Optional |
+| OAuth/OIDC | `jep-profile:oauth-oidc:0` | Optional |
+| RATS | `jep-profile:rats:0` | Optional |
+| Local IAM | `jep-profile:local-iam:0` | Optional |
+| HJS Archive | `jep-profile:hjs-archive:0` | Optional |
+| JAC Chain | `jep-profile:jac-chain:0` | Optional |
+| Blockchain Anchor | `jep-profile:blockchain-anchor:0` | Optional |
+| AI Actor | `jep-profile:ai-actor:0` | Optional |]]></sourcecode>
+<t>---</t></section><section numbered="true"><name>Author's Address</name><t>Yuqiang Wang  
+Email: signal@humanjudgment.org  
+URI: https://github.com/hjs-spec</t></section><section numbered="true"><name>v0.6 Direct Upgrade Note</name><t>This document is part of the JEP v0.6 draft set. The v0.6 set directly
+incorporates standardization structure, interoperability profiles,
+conformance artifacts, schemas, signed test vectors, invalid cases, and
+multi-language validator seeds without changing the JEP-Core narrow-waist
+semantics.</t></section>
+  </middle>
+</rfc>

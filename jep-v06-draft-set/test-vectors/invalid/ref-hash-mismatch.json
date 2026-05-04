@@ -1,0 +1,26 @@
+{
+  "name": "ref-hash-mismatch",
+  "event": {
+    "jep": "1",
+    "verb": "V",
+    "who": "did:example:verifier-123",
+    "when": 1742345700,
+    "what": {
+      "claim": "verified",
+      "verification_scope": [
+        "syntax",
+        "cryptographic",
+        "actor_binding"
+      ],
+      "result": "pass"
+    },
+    "nonce": "4d0e9f80-3333-4abc-9def-123456789abc",
+    "aud": "https://platform.example.com",
+    "ref": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "sig": "eyJhbGciOiJFZDI1NTE5Iiwia2lkIjoiZGlkOmV4YW1wbGU6dmVyaWZpZXItMTIzI2tleS0xIn0..W3A6t5jo3yhI5IunHh6XT_KOAqNEb9_itYyjCE5-oYIvIlktWPAhUcxgQP_MLQcsKD0ymrmq-4mVKChzkyKECA"
+  },
+  "expected": {
+    "valid": false,
+    "error": "ERR_REF_HASH_MISMATCH"
+  }
+}
