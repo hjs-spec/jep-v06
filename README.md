@@ -1,5 +1,13 @@
 # JEP v0.6 Draft Set
 
+## Public Mirrors
+
+- Hugging Face Space: https://huggingface.co/spaces/yuqiangJEP/jep-v06-spec-demo/tree/main
+- Hugging Face Conformance Dataset: https://huggingface.co/datasets/yuqiangJEP/jep-v06-conformance-suite
+- IETF JEP-Core Draft: https://datatracker.ietf.org/doc/draft-wang-jep-judgment-event-protocol/
+- IETF JEP-Conformance Draft: https://datatracker.ietf.org/doc/draft-wang-jep-conformance/
+- IETF JEP-Profiles Draft: https://datatracker.ietf.org/doc/draft-wang-jep-profiles/
+
 This package contains three draft documents:
 
 1. `draft-wang-jep-judgment-event-protocol-06.md`  
@@ -15,14 +23,6 @@ This set is designed as a v0.6 release package:
 - Core is stable and narrow.
 - Profiles are optional and extensible.
 - Conformance can evolve quickly without destabilizing Core.
-
-## Public Mirrors
-
-- Hugging Face Space: https://huggingface.co/spaces/yuqiangJEP/jep-v06-spec-demo/tree/main
-- Hugging Face Conformance Dataset: https://huggingface.co/datasets/yuqiangJEP/jep-v06-conformance-suite
-- IETF JEP-Core Draft: https://datatracker.ietf.org/doc/draft-wang-jep-judgment-event-protocol/
-- IETF JEP-Conformance Draft: https://datatracker.ietf.org/doc/draft-wang-jep-conformance/
-- IETF JEP-Profiles Draft: https://datatracker.ietf.org/doc/draft-wang-jep-profiles/
 
 ## Adoption and review guides
 
