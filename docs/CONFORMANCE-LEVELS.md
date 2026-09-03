@@ -1,76 +1,42 @@
 # JEP v0.6 Conformance Levels
 
-This document defines practical conformance levels for implementations.
+JEP validation levels are cumulative. A result reports the highest stage actually completed; the level at which an error is classified is not automatically the completed level.
 
-These levels are non-normative labels built on top of the JEP validation model.
+## Level 0 — Syntax
 
-## Level A — Parse-only implementation
-
-Supports:
-
-- JSON parsing;
+- strict UTF-8 JSON and I-JSON constraints;
 - duplicate member rejection;
-- required field validation;
-- verb validation;
-- structural schema checks.
+- required fields and field types;
+- wire version, verb, digest, nonce, reference, extension, and verb-specific structural checks.
 
-Does not require signature verification.
+The Go seed stops here and returns no event hash.
 
-## Level B — Core cryptographic verifier
+## Level 1 — Cryptographic
 
-Supports Level A plus:
+Level 0 plus:
 
-- JCS canonicalization;
-- detached JWS verification;
-- event hash calculation;
-- algorithm-tagged digest handling;
-- validation result object.
+- RFC 8785 JCS canonicalization;
+- detached signature-container processing;
+- signature algorithm and key-type checks;
+- signature verification;
+- full signed-event hash calculation.
 
-## Level C — Actor-binding verifier
+A missing key, malformed signature, key-type mismatch, or failed signature does not complete Level 1.
 
-Supports Level B plus:
+## Level 2 — Actor binding
 
-- trust profile interface;
-- `who` / `kid` binding;
-- key rotation awareness;
-- revocation handling where profile-defined;
-- historical key validity where profile-defined.
+Level 1 plus successful evaluation of an explicitly named trust profile binding the signing key to `who`. The local `kid-prefix` and `inline` profiles are demonstration profiles only.
 
-## Level D — Chain verifier
+## Level 3 — Chain
 
-Supports Level C plus:
+Level 2 plus the declared chain checks, including applicable reference resolution, replay handling, termination effects, cycle detection, critical extension processing, and observed-log assumption reporting.
 
-- reference resolution;
-- chain validation;
-- termination effect checks;
-- cycle detection;
-- observed-log assumption reporting.
+## Level 4 — Policy
 
-## Level E — Profile-aware verifier
+Level 3 plus an explicitly named domain, organizational, legal, or regulatory policy profile. The core seed does not claim Level 4.
 
-Supports Level D plus one or more optional profiles:
+## Important boundaries
 
-- DID/VC;
-- X.509;
-- OAuth/OIDC;
-- RATS;
-- Local IAM;
-- HJS Archive;
-- JAC Chain;
-- AI Actor.
-
-## Declaration examples
-
-```text
-This implementation conforms to JEP-Core-0.6 Level B.
-
-This implementation conforms to JEP-Core-0.6 Level D and supports
-jep-profile:hjs-archive:0.
-
-This implementation conforms to JEP-Core-0.6 Level E with DID/VC and
-JAC Chain profiles.
-```
-
-## Important rule
-
-A conformance level does not imply legal, factual, regulatory, or policy correctness unless the relevant external profile has been evaluated.
+- A cryptographically valid event may be actor-binding or policy invalid.
+- Archival validity is distinct from real-time acceptance.
+- A successful reference-chain validation does not prove causality, external truth, complete logging, legal liability, or authorization validity.

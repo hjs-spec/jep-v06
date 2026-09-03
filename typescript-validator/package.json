@@ -1,13 +1,16 @@
 {
   "name": "jep-v06-typescript-validator-seed",
-  "version": "0.6.0",
+  "version": "0.6.1",
+  "private": true,
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "test": "node test.mjs",
+    "check": "npm run build && npm test",
     "validate": "node dist/jep_validate.js ../test-vectors/valid/J-basic-signed.json ../test-vectors/valid/public-keys.json"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
   }
 }
