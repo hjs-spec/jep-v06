@@ -33,13 +33,13 @@ jobs:
           mkdir -p /tmp/jep06-payload
           unzip -q /tmp/jep06-payload.zip -d /tmp/jep06-payload
 
-      - name: Apply the validated repository payload
+      - name: Apply non-workflow repository payload
         shell: bash
         run: |
           set -euo pipefail
+          rm -f /tmp/jep06-payload/.github/workflows/conformance.yml
           rsync -a /tmp/jep06-payload/ ./
-          rm -rf .jep06-bootstrap
-          rm -f .github/workflows/apply-jep06-patch.yml
+          rm -rf .jep06-bootstrap .alignment
 
       - name: Commit aligned implementation
         shell: bash
