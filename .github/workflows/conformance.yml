@@ -1,0 +1,59 @@
+name: JEP v0.6 conformance
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e '.[test]'
+      - run: python -m pytest
+      - run: python reference-validator/jep_validate.py run-tests test-manifest.json
+      - run: python -m json.tool schemas/jep-event.schema.json >/dev/null
+      - run: python -m json.tool schemas/jep-validation-result.schema.json >/dev/null
+
+  typescript:
+    name: TypeScript / Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - working-directory: typescript-validator
+        run: npm install
+      - working-directory: typescript-validator
+        run: npm run check
+
+  go:
+    name: Go syntax verifier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+          cache-dependency-path: go-validator/go.mod
+      - working-directory: go-validator
+        run: go test ./...
