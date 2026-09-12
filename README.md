@@ -36,3 +36,7 @@ Additional v0.6 guidance files are available under `docs/`:
 - `END-TO-END-DEMO.md`
 - `CONFORMANCE-LEVELS.md`
 - `INTEROPERABILITY-REPORT-TEMPLATE.md`
+
+## JEP-TSTO Binding/01
+
+The [Binding/01 integration note](docs/JEP-TSTO-BINDING-01.md) declares the joint Schema, signature and immutable-reference validation path, historical compatibility, and algorithm boundaries without changing JEP-Core 0.6.
