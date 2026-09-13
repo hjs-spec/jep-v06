@@ -5,7 +5,7 @@
 The remaining implementation work is merged. GitHub releases exist in 17 repositories. The wire protocol remains version `1` / JEP-Core-0.6; implementation version 0.7 does not introduce a new wire protocol.
 
 - Go: RFC 8785 hashes, detached JWS Ed25519, explicit actor-binding profiles, chain integrity and persistent acceptance replay checks. All 27 common manifest cases pass.
-- API 0.7.2: PostgreSQL state shared across hosts; external file-keyring or Vault Transit signing; immutable public-key history through rotation; authenticated signing; offline SQLite migration and explicit legacy verification.
+- API 0.7.2: PostgreSQL state shared across hosts; external file-keyring or Vault Transit signing; immutable public-key history through rotation; authenticated signing and nonce consumption; offline SQLite migration and explicit legacy verification.
 - Authenticated cross-repository checks: 12 SDK J/D/T/V checks, 12 Python/TypeScript/Go verification checks, copied standalone Action execution, API restart and replay rejection, plus a real CLI request.
 - Real PostgreSQL CI: two independent API processes, one winner among 16 concurrent acceptance requests, retained verification of old/new signatures after rotation.
 - Downloaded GitHub artifacts were installed outside the source tree: Go binary, Python validator, Python SDK and npm tarball. `go install` of the validator and versioned Go SDK module download also passed.
@@ -32,7 +32,7 @@ The remaining implementation work is merged. GitHub releases exist in 17 reposit
 | sdk-py | 0.6.1 | [Download](https://github.com/hjs-spec/sdk-py/releases/tag/v0.6.1) |
 | shutup-mcp | 0.3.0a1 | [Download](https://github.com/hjs-spec/shutup-mcp/releases/tag/v0.3.0a1) |
 
-API container: `ghcr.io/hjs-spec/jep-api:0.7.2`. Its build/push workflow passed. Existing package versions and tags were retained.
+API container: `ghcr.io/hjs-spec/jep-api:0.7.2`. Its build/push workflow passed. Anonymous GHCR access returned HTTP 401; public pull availability is not claimed. Use authorized package access or configure package visibility in GitHub. Existing package versions and tags were retained.
 
 ## Pending external configuration
 
