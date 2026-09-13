@@ -459,6 +459,7 @@ function validateEvent(event: any, keys: Map<string, any>, options: ValidateOpti
 
     let cache: Set<string> | undefined;
     let replayKey: string | undefined;
+    let legacyReplayKey = "";
     if (options.mode === "acceptance") {
       const now = options.now ?? Math.floor(Date.now() / 1000);
       if (event.when < now - options.maxAge) throw new ValidationFault("ERR_EVENT_EXPIRED", "event is older than the acceptance freshness window", 3);
@@ -469,8 +470,10 @@ function validateEvent(event: any, keys: Map<string, any>, options: ValidateOpti
       const existing = fs.existsSync(options.replayCache) ? loadJsonUnique(options.replayCache) : [];
       requireCondition(Array.isArray(existing) && existing.every((x: any) => typeof x === "string"), "ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "replay cache must be a JSON string array", 3);
       cache = new Set(existing);
-      replayKey = [event.who, event.aud || "", profile, event.nonce].join("\x1f");
-      if (cache.has(replayKey)) throw new ValidationFault("ERR_NONCE_REPLAY", "nonce has already been accepted in this context", 3);
+      const fields = [event.who, event.aud || "", profile, event.nonce];
+      replayKey = "v2:" + fields.map(value => `${Buffer.byteLength(value, "utf8")}:${value}`).join("");
+      legacyReplayKey = fields.join("\x1f");
+      if (cache.has(replayKey) || cache.has(legacyReplayKey)) throw new ValidationFault("ERR_NONCE_REPLAY", "nonce has already been accepted in this context", 3);
     }
     if (options.expectedAudience !== undefined && event.aud !== options.expectedAudience) throw new ValidationFault("ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "aud does not match the expected validation context", 4);
     processCriticalExtensions(event);
@@ -483,7 +486,7 @@ function validateEvent(event: any, keys: Map<string, any>, options: ValidateOpti
       const current = fs.existsSync(options.replayCache) ? loadJsonUnique(options.replayCache) : [];
       requireCondition(Array.isArray(current) && current.every((x: any) => typeof x === "string"), "ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "invalid replay cache", 3);
       cache = new Set(current);
-      if (cache.has(replayKey)) throw new ValidationFault("ERR_NONCE_REPLAY", "nonce has already been accepted in this context", 3);
+      if (cache.has(replayKey) || cache.has(legacyReplayKey)) throw new ValidationFault("ERR_NONCE_REPLAY", "nonce has already been accepted in this context", 3);
       cache.add(replayKey);
       const temporary = `${options.replayCache}.${process.pid}.tmp`;
       fs.mkdirSync(resolveParent(options.replayCache), { recursive: true });

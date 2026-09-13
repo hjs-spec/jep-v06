@@ -495,6 +495,11 @@ def _reference_digest(ref: Any) -> str | None:
 
 
 def _nonce_context(event: Mapping[str, Any], profile: str) -> str:
+    fields = (event.get("who", ""), event.get("aud", ""), profile, event.get("nonce", ""))
+    return "v2:" + "".join(f"{len(value.encode('utf-8'))}:{value}" for value in fields)
+
+
+def _legacy_nonce_context(event: Mapping[str, Any], profile: str) -> str:
     return "\x1f".join((str(event.get("who", "")), str(event.get("aud", "")), profile, str(event.get("nonce", ""))))
 
 
@@ -585,7 +590,7 @@ def validate_event_obj(
             _require(replay_cache_path is not None, "ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "acceptance mode requires a persistent replay cache", 3)
             replay_cache = _load_replay_cache(Path(replay_cache_path))
             replay_key = _nonce_context(event, profile)
-            if replay_key in replay_cache:
+            if replay_key in replay_cache or _legacy_nonce_context(event, profile) in replay_cache:
                 raise ValidationFault("ERR_NONCE_REPLAY", "nonce has already been accepted in this actor/audience/profile context", 3)
 
         if expected_audience is not None and event.get("aud") != expected_audience:
@@ -604,7 +609,7 @@ def validate_event_obj(
             with _replay_lock(cache_path):
                 # Re-read while locked: atomic rename alone does not make consumption atomic.
                 replay_cache = _load_replay_cache(cache_path)
-                if replay_key in replay_cache:
+                if replay_key in replay_cache or _legacy_nonce_context(event, profile) in replay_cache:
                     raise ValidationFault("ERR_NONCE_REPLAY", "nonce has already been accepted in this context", 3)
                 replay_cache.add(replay_key)
                 _save_replay_cache(cache_path, replay_cache)
