@@ -9,7 +9,7 @@ JEP validation levels are cumulative. A result reports the highest stage actuall
 - required fields and field types;
 - wire version, verb, digest, nonce, reference, extension, and verb-specific structural checks.
 
-The Go seed stops here and returns no event hash.
+The Go validator’s explicit `syntax` mode stops here and returns no event hash. Its event and chain modes continue through the checks described below.
 
 ## Level 1 — Cryptographic
 

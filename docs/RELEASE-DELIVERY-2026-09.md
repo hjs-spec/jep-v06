@@ -5,10 +5,30 @@
 The remaining implementation work is merged. GitHub releases exist in 17 repositories. The wire protocol remains version `1` / JEP-Core-0.6; implementation version 0.7 does not introduce a new wire protocol.
 
 - Go: RFC 8785 hashes, detached JWS Ed25519, explicit actor-binding profiles, chain integrity and persistent acceptance replay checks. All 27 common manifest cases pass.
-- API 0.7.2: PostgreSQL state shared across hosts; external file-keyring or Vault Transit signing; immutable public-key history through rotation; authenticated signing and nonce consumption; offline SQLite migration and explicit legacy verification.
+- API 0.7.3: PostgreSQL state shared across hosts; external file-keyring or Vault Transit signing; immutable public-key history through rotation; authenticated signing and nonce consumption; offline SQLite migration and explicit legacy verification.
 - Authenticated cross-repository checks: 12 SDK J/D/T/V checks, 12 Python/TypeScript/Go verification checks, copied standalone Action execution, API restart and replay rejection, plus a real CLI request.
 - Real PostgreSQL CI: two independent API processes, one winner among 16 concurrent acceptance requests, retained verification of old/new signatures after rotation.
 - Downloaded GitHub artifacts were installed outside the source tree: Go binary, Python validator, Python SDK and npm tarball. `go install` of the validator and versioned Go SDK module download also passed.
+
+## SDK/API conformance follow-up
+
+The verification audit exposed missing result metadata, incompatible resolved JWK metadata being accepted, inconsistent diagnostics, and Python package/command collisions. The fixes are merged:
+
+| Component | Fix | Mainline PR |
+|---|---|---|
+| API 0.7.3 | Complete `conformance_class`/diagnostics; check key type, curve, algorithm, identifier and usage; align errors to the core vectors | [#7](https://github.com/hjs-spec/jep-api/pull/7) |
+| Python SDK 0.6.2 | Preserve conformance class and retain old-server and positional-constructor compatibility | [#3](https://github.com/hjs-spec/sdk-py/pull/3) |
+| JavaScript SDK 0.6.2 | Update TypeScript result declarations; GitHub tarball released; automatic npm publication disabled | [#5](https://github.com/hjs-spec/sdk-js/pull/5) |
+| Go SDK 0.6.2 | Preserve conformance class and diagnostics | [#3](https://github.com/hjs-spec/sdk-go/pull/3) |
+| Legacy Agent SDK 2.0.0 | Use `jep_agent` imports and `jep-agent` command, avoiding current SDK/CLI collisions | [#3](https://github.com/hjs-spec/jep-agent-sdk/pull/3) |
+
+API regression: all 26 official event vectors agree on validity, completed level, error code and every positive event hash; every response passes the result schema. The API CI also passed with real PostgreSQL. The API remains a Level 1 service; actor binding, full chain and policy validation are not newly claimed.
+
+Installed-artifact checks cover each SDK creating/verifying J/D/T/V (12 events), 8 cross-SDK verifications and 12 hash comparisons. Legacy/current Python packages and the CLI were installed in both orders in fresh environments; installed files are disjoint, each SDK survives uninstalling the other, and legacy signatures still verify. The tests are reproducible with [the integration scripts](../integration/README.md) and the Agent SDK package-coexistence CI job.
+
+Agent SDK 2.0 is an import/command migration, not a rewrite of historical signed events or a claim that its legacy format is JEP-Core-0.6. Existing 1.x shared environments should follow [MIGRATION-2.md](https://github.com/hjs-spec/jep-agent-sdk/blob/main/MIGRATION-2.md). Current clients retain their existing imports.
+
+npm publication and live API deployment remain deferred. The 0.6.2 JavaScript release has a successful GitHub package job and a skipped npm job. No HF deployment or database provisioning was performed.
 
 ## Available GitHub versions
 
@@ -16,8 +36,8 @@ The remaining implementation work is merged. GitHub releases exist in 17 reposit
 |---|---|---|
 | Agent-Blackbox | 0.2.0a2 | [Download](https://github.com/hjs-spec/Agent-Blackbox/releases/tag/v0.2.0a2) |
 | cli | 0.6.1 | [Download](https://github.com/hjs-spec/cli/releases/tag/v0.6.1) |
-| jep-agent-sdk | 1.0.1 | [Download](https://github.com/hjs-spec/jep-agent-sdk/releases/tag/v1.0.1) |
-| jep-api | 0.7.2 | [Download](https://github.com/hjs-spec/jep-api/releases/tag/v0.7.2) |
+| jep-agent-sdk | 2.0.0 | [Download](https://github.com/hjs-spec/jep-agent-sdk/releases/tag/v2.0.0) |
+| jep-api | 0.7.3 | [Download](https://github.com/hjs-spec/jep-api/releases/tag/v0.7.3) |
 | jep-authority-runtime | 0.1.1 | [Download](https://github.com/hjs-spec/jep-authority-runtime/releases/tag/v0.1.1) |
 | jep-claude-replay | 0.1.1 | [Download](https://github.com/hjs-spec/jep-claude-replay/releases/tag/v0.1.1) |
 | jep-github-action | 0.6.2 | [Download](https://github.com/hjs-spec/jep-github-action/releases/tag/v0.6.2) |
@@ -27,12 +47,12 @@ The remaining implementation work is merged. GitHub releases exist in 17 reposit
 | jep-openai-agents-middleware | 0.1.1 | [Download](https://github.com/hjs-spec/jep-openai-agents-middleware/releases/tag/v0.1.1) |
 | jep-runtime | 0.1.1 | [Download](https://github.com/hjs-spec/jep-runtime/releases/tag/v0.1.1) |
 | jep-v06 | 0.7.0 | [Download](https://github.com/hjs-spec/jep-v06/releases/tag/v0.7.0) |
-| sdk-go | 0.6.1 | [Download](https://github.com/hjs-spec/sdk-go/releases/tag/v0.6.1) |
-| sdk-js | 0.6.1 | [Download](https://github.com/hjs-spec/sdk-js/releases/tag/v0.6.1) |
-| sdk-py | 0.6.1 | [Download](https://github.com/hjs-spec/sdk-py/releases/tag/v0.6.1) |
+| sdk-go | 0.6.2 | [Download](https://github.com/hjs-spec/sdk-go/releases/tag/v0.6.2) |
+| sdk-js | 0.6.2 | [Download](https://github.com/hjs-spec/sdk-js/releases/tag/v0.6.2) |
+| sdk-py | 0.6.2 | [Download](https://github.com/hjs-spec/sdk-py/releases/tag/v0.6.2) |
 | shutup-mcp | 0.3.0a1 | [Download](https://github.com/hjs-spec/shutup-mcp/releases/tag/v0.3.0a1) |
 
-API container: `ghcr.io/hjs-spec/jep-api:0.7.2`. Its build/push workflow passed. Anonymous GHCR access returned HTTP 401; public pull availability is not claimed. Use authorized package access or configure package visibility in GitHub. Existing package versions and tags were retained.
+API container: `ghcr.io/hjs-spec/jep-api:0.7.3`. Its build/push workflow passed. Anonymous GHCR access returned HTTP 401; public pull availability is not claimed. Use authorized package access or configure package visibility in GitHub. Existing package versions and tags were retained.
 
 ## PyPI delivery complete
 
@@ -42,7 +62,7 @@ All 13 Python distributions are published. Public PyPI wheel and source-distribu
 |---|---|---|
 | [agent-blackbox-jep](https://pypi.org/project/agent-blackbox-jep/0.2.0a2/) | `0.2.0a2` | `Agent-Blackbox` |
 | [jep-cli](https://pypi.org/project/jep-cli/0.6.1/) | `0.6.1` | `cli` |
-| [jep-agent-sdk](https://pypi.org/project/jep-agent-sdk/1.0.1/) | `1.0.1` | `jep-agent-sdk` |
+| [jep-agent-sdk](https://pypi.org/project/jep-agent-sdk/2.0.0/) | `2.0.0` | `jep-agent-sdk` |
 | [jep-authority-runtime](https://pypi.org/project/jep-authority-runtime/0.1.1/) | `0.1.1` | `jep-authority-runtime` |
 | [jep-claude-replay](https://pypi.org/project/jep-claude-replay/0.1.1/) | `0.1.1` | `jep-claude-replay` |
 | [jep-langgraph-adapter](https://pypi.org/project/jep-langgraph-adapter/0.1.1/) | `0.1.1` | `jep-langgraph-adapter` |
@@ -51,18 +71,18 @@ All 13 Python distributions are published. Public PyPI wheel and source-distribu
 | [jep-openai-agents-middleware](https://pypi.org/project/jep-openai-agents-middleware/0.1.1/) | `0.1.1` | `jep-openai-agents-middleware` |
 | [jep-runtime](https://pypi.org/project/jep-runtime/0.1.1/) | `0.1.1` | `jep-runtime` |
 | [jep-v06-conformance-seed](https://pypi.org/project/jep-v06-conformance-seed/0.7.0/) | `0.7.0` | `jep-v06` |
-| [jep-sdk-py](https://pypi.org/project/jep-sdk-py/0.6.1/) | `0.6.1` | `sdk-py` |
+| [jep-sdk-py](https://pypi.org/project/jep-sdk-py/0.6.2/) | `0.6.2` | `sdk-py` |
 | [shutup-mcp](https://pypi.org/project/shutup-mcp/0.3.0a1/) | `0.3.0a1` | `shutup-mcp` |
 
 The Blackbox distribution uses the owner's available suffixed name `agent-blackbox-jep`; its Python import remains `agent_blackbox`.
 
 ## Registry blocker and deferred API deployment
 
-The owner has narrowed API delivery to the repository implementation aligned with JEP-Core-0.6. Live API deployment and external database provisioning are deferred. Implementation version `0.7.2` is a software version; the protocol profile remains `jep-core-0.6` with wire version `1`. npm publication remains blocked by account access. Historical workflow failures are retained as evidence.
+The owner has narrowed API delivery to the repository implementation aligned with JEP-Core-0.6. Live API deployment and external database provisioning are deferred. Implementation version `0.7.3` is a software version; the protocol profile remains `jep-core-0.6` with wire version `1`. npm publication remains blocked by account access. Historical workflow failures are retained as evidence.
 
 | Target | Observed result | Next action |
 |---|---|---|
-| npm `@hjs-spec/jep-sdk-js` | Current recovery workflow reports `ENEEDAUTH` without credentials | Confirm ownership/publish rights for the npm scope and package. Configure GitHub trusted publishing for `hjs-spec/sdk-js`, workflow `registry.yml` (and `release.yml` for future automatic versions), or supply the supported repository secret `NPM_TOKEN` for initial publication. Then run `registry.yml`; it downloads the already released tarball. |
+| npm `@hjs-spec/jep-sdk-js` | Current recovery workflow reports `ENEEDAUTH` without credentials | Confirm ownership/publish rights for the npm scope and package. Configure GitHub trusted publishing for `hjs-spec/sdk-js`, workflow `registry.yml` (or an explicitly opted-in `release.yml` dispatch), or supply the supported repository secret `NPM_TOKEN` for initial publication. Then run `registry.yml`; it downloads the already released tarball. |
 | HF Space `yuqiangJEP/jep-api` | Repository code is updated for JEP-Core-0.6; live deployment is deferred by the owner | No deployment or database setup now. Configuration checks and deployment are manual-only workflows on `main`; code merges and implementation releases do not trigger them. |
 
 The connected Hugging Face account was confirmed as `yuqiangJEP`. Its OAuth scopes include repository read and Jobs access, not repository writes; connecting it did not grant Space deployment permission. The owner separately configured `HF_TOKEN` in GitHub Actions, and [the read-only configuration check](https://github.com/hjs-spec/jep-api/actions/runs/34740151251) authenticated successfully. It stopped on missing settings without uploading or restarting. The public Space remains on API 0.6.0; no live upgrade is claimed.
