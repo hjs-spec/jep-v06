@@ -38,13 +38,15 @@ API container: `ghcr.io/hjs-spec/jep-api:0.7.2`. Its build/push workflow passed.
 
 PyPI delivery now includes [jep-sdk-py 0.6.1](https://pypi.org/project/jep-sdk-py/0.6.1/), [jep-cli 0.6.1](https://pypi.org/project/jep-cli/0.6.1/), [jep-agent-sdk 1.0.1](https://pypi.org/project/jep-agent-sdk/1.0.1/), and [agent-blackbox-jep 0.2.0a2](https://pypi.org/project/agent-blackbox-jep/0.2.0a2/). Public registry files were checked against the GitHub release artifacts. The Blackbox distribution uses the owner's available suffixed name; its Python import remains `agent_blackbox`.
 
-The next configured batch is also published: [jep-v06-conformance-seed 0.7.0](https://pypi.org/project/jep-v06-conformance-seed/0.7.0/), [jep-authority-runtime 0.1.1](https://pypi.org/project/jep-authority-runtime/0.1.1/), and [jep-claude-replay 0.1.1](https://pypi.org/project/jep-claude-replay/0.1.1/). Only failed PyPI jobs were rerun. Both wheel and source-distribution hashes match their existing GitHub release artifacts, and public pip wheel downloads passed. This completes 7 of 13 Python distributions.
+The next configured batch is also published: [jep-v06-conformance-seed 0.7.0](https://pypi.org/project/jep-v06-conformance-seed/0.7.0/), [jep-authority-runtime 0.1.1](https://pypi.org/project/jep-authority-runtime/0.1.1/), and [jep-claude-replay 0.1.1](https://pypi.org/project/jep-claude-replay/0.1.1/). Only failed PyPI jobs were rerun. Both wheel and source-distribution hashes match their existing GitHub release artifacts, and public pip wheel downloads passed.
+
+[jep-langgraph-adapter 0.1.1](https://pypi.org/project/jep-langgraph-adapter/0.1.1/), [jep-lineage-explorer 0.1.1](https://pypi.org/project/jep-lineage-explorer/0.1.1/), and [jep-mcp-wrapper 0.1.1](https://pypi.org/project/jep-mcp-wrapper/0.1.1/) have now passed the same publication, artifact-hash and public-download checks. This completes 10 of 13 Python distributions.
 
 The remaining steps below were attempted and did not complete. Test CI passed; registry/deployment jobs report failures rather than concealing them.
 
 | Target | Observed result | Required configuration |
 |---|---|---|
-| PyPI (6 remaining Python distributions) | OIDC exchange rejected with `invalid-publisher` | Configure a trusted/pending publisher for each remaining package: GitHub owner `hjs-spec`, the matching repository, workflow `release.yml`, no GitHub environment. Then rerun only the failed PyPI jobs. |
+| PyPI (3 remaining Python distributions) | OIDC exchange rejected with `invalid-publisher` | Configure a trusted/pending publisher for each remaining package: GitHub owner `hjs-spec`, the matching repository, workflow `release.yml`, no GitHub environment. Then rerun only the failed PyPI jobs. |
 | npm `@hjs-spec/jep-sdk-js` | Current recovery workflow reports `ENEEDAUTH` without credentials | Confirm ownership/publish rights for the npm scope and package. Configure GitHub trusted publishing for `hjs-spec/sdk-js`, workflow `registry.yml` (and `release.yml` for future automatic versions), or supply the supported repository secret `NPM_TOKEN` for initial publication. Then run `registry.yml`; it downloads the already released tarball. |
 | HF Space `yuqiangJEP/jep-api` | Deployment stopped before upload: `HF_TOKEN` is not configured in GitHub Actions | Add a Space-write token as the jep-api repository Actions secret `HF_TOKEN`, then provision the Space PostgreSQL and external signing settings described in DEPLOYMENT.md. Rerun the deployment job. |
 
@@ -54,17 +56,14 @@ Publisher configuration references: [PyPI pending projects](https://docs.pypi.or
 
 ## Recovery configuration to enter
 
-Initial retries returned PyPI `invalid-publisher`, npm `E404`, and missing HF_TOKEN. After the owner configured trusted publishers, the seven PyPI distributions listed above were published successfully. The current npm recovery workflow reports `ENEEDAUTH` without credentials. No npm publication or live HF deployment is claimed.
+Initial retries returned PyPI `invalid-publisher`, npm `E404`, and missing HF_TOKEN. After the owner configured trusted publishers, the ten PyPI distributions listed above were published successfully. The current npm recovery workflow reports `ENEEDAUTH` without credentials. No npm publication or live HF deployment is claimed.
 
 ### PyPI
 
-For projects not yet created, open [PyPI account publishing](https://pypi.org/manage/account/publishing/) and add a pending GitHub publisher for each remaining row below. The seven published projects above are already configured. For an existing project under your control, add the publisher in that project's Publishing settings. All rows use owner `hjs-spec`, workflow filename `release.yml`, and an empty environment field. Add pending publishers in small batches and publish each batch before continuing if account registration limits are reached.
+For projects not yet created, open [PyPI account publishing](https://pypi.org/manage/account/publishing/) and add a pending GitHub publisher for each remaining row below. The ten published projects above are already configured. For an existing project under your control, add the publisher in that project's Publishing settings. All rows use owner `hjs-spec`, workflow filename `release.yml`, and an empty environment field. Add pending publishers in small batches and publish each batch before continuing if account registration limits are reached.
 
 | PyPI project name | GitHub repository | Version ready to publish |
 |---|---|---|
-| `jep-langgraph-adapter` | `jep-langgraph-adapter` | `0.1.1` |
-| `jep-lineage-explorer` | `jep-lineage-explorer` | `0.1.1` |
-| `jep-mcp-wrapper` | `jep-mcp-wrapper` | `0.1.1` |
 | `jep-openai-agents-middleware` | `jep-openai-agents-middleware` | `0.1.1` |
 | `jep-runtime` | `jep-runtime` | `0.1.1` |
 | `shutup-mcp` | `shutup-mcp` | `0.3.0a1` |
