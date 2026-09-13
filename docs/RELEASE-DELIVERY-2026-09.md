@@ -5,7 +5,7 @@
 The remaining implementation work is merged. GitHub releases exist in 17 repositories. The wire protocol remains version `1` / JEP-Core-0.6; implementation version 0.7 does not introduce a new wire protocol.
 
 - Go: RFC 8785 hashes, detached JWS Ed25519, explicit actor-binding profiles, chain integrity and persistent acceptance replay checks. All 27 common manifest cases pass.
-- API 0.7.1: PostgreSQL state shared across hosts; external file-keyring or Vault Transit signing; immutable public-key history through rotation; authenticated signing; offline SQLite migration and explicit legacy verification.
+- API 0.7.2: PostgreSQL state shared across hosts; external file-keyring or Vault Transit signing; immutable public-key history through rotation; authenticated signing; offline SQLite migration and explicit legacy verification.
 - Authenticated cross-repository checks: 12 SDK J/D/T/V checks, 12 Python/TypeScript/Go verification checks, copied standalone Action execution, API restart and replay rejection, plus a real CLI request.
 - Real PostgreSQL CI: two independent API processes, one winner among 16 concurrent acceptance requests, retained verification of old/new signatures after rotation.
 - Downloaded GitHub artifacts were installed outside the source tree: Go binary, Python validator, Python SDK and npm tarball. `go install` of the validator and versioned Go SDK module download also passed.
@@ -17,7 +17,7 @@ The remaining implementation work is merged. GitHub releases exist in 17 reposit
 | Agent-Blackbox | 0.2.0a1 | [Download](https://github.com/hjs-spec/Agent-Blackbox/releases/tag/v0.2.0a1) |
 | cli | 0.6.1 | [Download](https://github.com/hjs-spec/cli/releases/tag/v0.6.1) |
 | jep-agent-sdk | 1.0.1 | [Download](https://github.com/hjs-spec/jep-agent-sdk/releases/tag/v1.0.1) |
-| jep-api | 0.7.1 | [Download](https://github.com/hjs-spec/jep-api/releases/tag/v0.7.1) |
+| jep-api | 0.7.2 | [Download](https://github.com/hjs-spec/jep-api/releases/tag/v0.7.2) |
 | jep-authority-runtime | 0.1.1 | [Download](https://github.com/hjs-spec/jep-authority-runtime/releases/tag/v0.1.1) |
 | jep-claude-replay | 0.1.1 | [Download](https://github.com/hjs-spec/jep-claude-replay/releases/tag/v0.1.1) |
 | jep-github-action | 0.6.2 | [Download](https://github.com/hjs-spec/jep-github-action/releases/tag/v0.6.2) |
@@ -32,7 +32,7 @@ The remaining implementation work is merged. GitHub releases exist in 17 reposit
 | sdk-py | 0.6.1 | [Download](https://github.com/hjs-spec/sdk-py/releases/tag/v0.6.1) |
 | shutup-mcp | 0.3.0a1 | [Download](https://github.com/hjs-spec/shutup-mcp/releases/tag/v0.3.0a1) |
 
-API container: `ghcr.io/hjs-spec/jep-api:0.7.1`. Its build/push workflow passed. Existing package versions and tags were retained.
+API container: `ghcr.io/hjs-spec/jep-api:0.7.2`. Its build/push workflow passed. Existing package versions and tags were retained.
 
 ## Pending external configuration
 
