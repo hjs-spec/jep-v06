@@ -48,6 +48,49 @@ The connected Hugging Face account was confirmed as `yuqiangJEP`. Its OAuth scop
 
 Publisher configuration references: [PyPI pending projects](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/), [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/).
 
+## Recovery configuration to enter
+
+One failed job for each target was retried after the report: PyPI still returned `invalid-publisher`, npm still returned `E404`, and HF still reported the missing `HF_TOKEN`. Account configuration remains necessary. No successful registry publication or live deployment is implied by these retries.
+
+### PyPI
+
+For projects not yet created, open [PyPI account publishing](https://pypi.org/manage/account/publishing/) and add a pending GitHub publisher for each row. For an existing project under your control, add the publisher in that project's Publishing settings. All rows use owner `hjs-spec`, workflow filename `release.yml`, and an empty environment field.
+
+| PyPI project name | GitHub repository | Version ready to publish |
+|---|---|---|
+| `agent-blackbox` | `Agent-Blackbox` | `0.2.0a1` |
+| `jep-cli` | `cli` | `0.6.1` |
+| `jep-agent-sdk` | `jep-agent-sdk` | `1.0.1` |
+| `jep-authority-runtime` | `jep-authority-runtime` | `0.1.1` |
+| `jep-claude-replay` | `jep-claude-replay` | `0.1.1` |
+| `jep-langgraph-adapter` | `jep-langgraph-adapter` | `0.1.1` |
+| `jep-lineage-explorer` | `jep-lineage-explorer` | `0.1.1` |
+| `jep-mcp-wrapper` | `jep-mcp-wrapper` | `0.1.1` |
+| `jep-openai-agents-middleware` | `jep-openai-agents-middleware` | `0.1.1` |
+| `jep-runtime` | `jep-runtime` | `0.1.1` |
+| `jep-v06-conformance-seed` | `jep-v06` | `0.7.0` |
+| `jep-sdk-py` | `sdk-py` | `0.6.1` |
+| `shutup-mcp` | `shutup-mcp` | `0.3.0a1` |
+
+Then select **Re-run failed jobs** on each failed release run. The successful GitHub release jobs remain intact; rerunning the entire workflow would hit the intentional existing-version protection.
+
+### npm
+
+The account needs publish rights to the npm scope `@hjs-spec`. Configure trusted publishing for repository `hjs-spec/sdk-js`, workflows `registry.yml` and `release.yml`, empty environment, with direct **npm publish** allowed. If initial publication requires a token, the current workflows now accept the repository Actions secret `NPM_TOKEN` in the publish step. See the [exact recovery procedure](https://github.com/hjs-spec/sdk-js/blob/main/PUBLISHING.md). Use **Run workflow** on `registry.yml` at `main` after configuring the account so that the new credential handling is used.
+
+### Hugging Face
+
+Add a token with write access to Space `yuqiangJEP/jep-api` as `HF_TOKEN` in [jep-api Actions secrets](https://github.com/hjs-spec/jep-api/settings/secrets/actions). In the [Space settings](https://huggingface.co/spaces/yuqiangJEP/jep-api/settings), configure:
+
+| Setting | Type | Required value |
+|---|---|---|
+| `JEP_DEPLOYMENT_MODE` | Variable | `production` |
+| `JEP_DATABASE_URL` | Secret | Shared PostgreSQL connection URL |
+| `JEP_KEYRING_JSON` | Secret | Existing external signing keyring, or use the documented Vault configuration |
+| `JEP_SIGNING_TOKEN` | Secret | API Bearer token required for signing and nonce consumption |
+
+Keyring generation, Vault alternatives and migration are documented in [API deployment instructions](https://github.com/hjs-spec/jep-api/blob/main/DEPLOYMENT.md). Configure these before rerunning deployment; a write token alone is insufficient for production startup. Secrets belong in the account settings, never in commits or the chat.
+
 ## Compatibility limits
 
 The legacy endpoint verifies historical sorted-JSON detached-JWS bytes against explicitly trusted retained public keys. It never upgrades a result to current baseline conformance or silently re-signs it. Existing JEP-04/Claude archive formats keep their own SDK/CLI verifiers. The old HF demo generated a fresh private key at each start; a historical key already lost cannot be reconstructed.
