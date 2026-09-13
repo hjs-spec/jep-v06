@@ -54,3 +54,21 @@ This alignment pass does not change JEP's four verbs or expand JEP-Core into a l
 ## Guides
 
 Additional implementation and review guidance is under `docs/`.
+- `IMPLEMENTER-GUIDE.md`
+- `PROFILE-AUTHOR-GUIDE.md`
+- `SECURITY-REVIEW-NOTES.md`
+- `PRIVACY-REVIEW-NOTES.md`
+- `ONE-PAGE-OVERVIEW.md`
+- `END-TO-END-DEMO.md`
+- `CONFORMANCE-LEVELS.md`
+- `INTEROPERABILITY-REPORT-TEMPLATE.md`
+
+## JEP-TSTO Binding/01
+
+The [Binding/01 integration note](docs/JEP-TSTO-BINDING-01.md) declares the joint Schema, signature and immutable-reference validation path, historical compatibility, and algorithm boundaries without changing JEP-Core 0.6.
+
+## Runtime and verification notes
+
+See [HARDENING.md](HARDENING.md) for supported behavior, regression checks, and compatibility boundaries.
+
+[Cross-repository hardening review map and verification evidence](docs/ECOSYSTEM-HARDENING-2026-09.md).

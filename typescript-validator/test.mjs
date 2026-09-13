@@ -43,6 +43,8 @@ for (const file of validCases) {
 }
 
 const invalidCases = [
+  ["signature-noncanonical-base64url.json", keys, "ERR_SIGNATURE_CONTAINER_INVALID", 0],
+  ["identity-key-forgery.json", join(vectors, "identity-key-forgery-keys.json"), "ERR_SIGNATURE_INVALID", 0],
   ["duplicate-member.json", keys, "ERR_DUPLICATE_MEMBER", 0],
   ["invalid-T-missing-target-scope.json", keys, "ERR_MISSING_REQUIRED_FIELD", 0],
   ["invalid-V-missing-scope.json", keys, "ERR_MISSING_REQUIRED_FIELD", 0],

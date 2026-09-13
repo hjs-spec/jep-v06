@@ -27,6 +27,8 @@ import os
 import re
 import sys
 import tempfile
+from nacl.signing import VerifyKey
+from contextlib import contextmanager
 import time
 import uuid
 from dataclasses import dataclass
@@ -166,7 +168,10 @@ def b64u_decode(value: str, *, label: str) -> bytes:
     if not isinstance(value, str) or not B64U_RE.fullmatch(value):
         raise ValidationFault("ERR_SIGNATURE_CONTAINER_INVALID", f"{label} is not unpadded base64url", 1)
     try:
-        return base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
+        raw = base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
+        if b64u(raw) != value:
+            raise ValueError("non-canonical base64url")
+        return raw
     except Exception as exc:
         raise ValidationFault("ERR_SIGNATURE_CONTAINER_INVALID", f"invalid {label}: {exc}", 1) from exc
 
@@ -431,7 +436,7 @@ def verify_detached_jws(event: Mapping[str, Any], payload: bytes, keys: Mapping[
         raise ValidationFault("ERR_SIGNATURE_INVALID", "cryptography package is unavailable", 1)
     signing_input = (protected_b64 + "." + b64u(payload)).encode("ascii")
     try:
-        Ed25519PublicKey.from_public_bytes(raw_key).verify(raw_signature, signing_input)
+        VerifyKey(raw_key).verify(signing_input, raw_signature)
     except Exception as exc:
         raise ValidationFault("ERR_SIGNATURE_INVALID", "Ed25519 signature verification failed", 1) from exc
     return kid, jwk
@@ -503,6 +508,16 @@ def _load_replay_cache(path: Path) -> set[str]:
     if isinstance(data, list) and all(isinstance(x, str) for x in data):
         return set(data)
     raise ValidationFault("ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "replay cache must be a JSON array of strings", 3)
+
+
+@contextmanager
+def _replay_lock(path: Path):
+    lock = path.with_name(path.name + ".consume-lock")
+    lock.mkdir(mode=0o700)
+    try:
+        yield
+    finally:
+        lock.rmdir()
 
 
 def _save_replay_cache(path: Path, values: Iterable[str]) -> None:
@@ -584,8 +599,15 @@ def validate_event_obj(
         _process_critical_extensions(event)
 
         if mode == "acceptance" and replay_cache is not None and replay_key is not None:
-            replay_cache.add(replay_key)
-            _save_replay_cache(Path(replay_cache_path), replay_cache)
+            cache_path = Path(replay_cache_path).resolve()
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            with _replay_lock(cache_path):
+                # Re-read while locked: atomic rename alone does not make consumption atomic.
+                replay_cache = _load_replay_cache(cache_path)
+                if replay_key in replay_cache:
+                    raise ValidationFault("ERR_NONCE_REPLAY", "nonce has already been accepted in this context", 3)
+                replay_cache.add(replay_key)
+                _save_replay_cache(cache_path, replay_cache)
 
         return _success_result(
             level=highest,
@@ -595,6 +617,8 @@ def validate_event_obj(
             event_hash_value=ehash,
             scopes=scopes,
         )
+    except (OSError, TimeoutError) as exc:
+        return _error_result(ValidationFault("ERR_DOMAIN_REQUIREMENT_UNSATISFIED", f"replay cache unavailable: {exc}", 3), highest_completed=highest, mode=mode, profile=profile, conformance_class=BASELINE_CLASS, event_hash_value=ehash, scopes=scopes)
     except ValidationFault as fault:
         return _error_result(
             fault,

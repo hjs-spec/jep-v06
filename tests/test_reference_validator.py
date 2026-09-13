@@ -56,6 +56,8 @@ def test_valid_signed_vectors_and_jcs_edges(name: str, expected_hash: str) -> No
 @pytest.mark.parametrize(
     "name,keys,code,level",
     [
+        ("signature-noncanonical-base64url.json", KEYS, "ERR_SIGNATURE_CONTAINER_INVALID", 0),
+        ("identity-key-forgery.json", INTEROP / "identity-key-forgery-keys.json", "ERR_SIGNATURE_INVALID", 0),
         ("duplicate-member.json", KEYS, "ERR_DUPLICATE_MEMBER", 0),
         ("J-missing-what.json", KEYS, "ERR_MISSING_REQUIRED_FIELD", 0),
         ("D-missing-details.json", KEYS, "ERR_INVALID_FIELD_TYPE", 0),

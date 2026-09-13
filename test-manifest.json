@@ -228,6 +228,24 @@
       "log_assumption": "partial",
       "expected_valid": true,
       "expected_level": 3
+    },
+    {
+      "name": "signature-noncanonical-base64url",
+      "kind": "event",
+      "path": "test-vectors/interop/signature-noncanonical-base64url.json",
+      "keys": "test-vectors/interop/public-keys.json",
+      "expected_valid": false,
+      "expected_level": 0,
+      "expected_error": "ERR_SIGNATURE_CONTAINER_INVALID"
+    },
+    {
+      "name": "identity-key-forgery",
+      "kind": "event",
+      "path": "test-vectors/interop/identity-key-forgery.json",
+      "keys": "test-vectors/interop/identity-key-forgery-keys.json",
+      "expected_valid": false,
+      "expected_level": 0,
+      "expected_error": "ERR_SIGNATURE_INVALID"
     }
   ]
 }

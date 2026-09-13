@@ -8,6 +8,7 @@ version = "0.6.1"
 description = "JEP v0.6 draft-set conformance and interoperability seed"
 requires-python = ">=3.10"
 dependencies = [
+    "PyNaCl>=1.6.2,<2",
   "cryptography>=42",
   "rfc8785==0.1.4"
 ]

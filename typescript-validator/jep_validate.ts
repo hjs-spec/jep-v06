@@ -8,6 +8,8 @@
  */
 
 import * as fs from "fs";
+import * as path from "node:path";
+import { ed25519 } from "@noble/curves/ed25519";
 import * as crypto from "crypto";
 
 const CORE_PROFILE = "jep-core-0.6";
@@ -221,7 +223,11 @@ function b64uDecode(value: unknown, label: string): Buffer {
   if (typeof value !== "string" || !B64U_RE.test(value)) {
     throw new ValidationFault("ERR_SIGNATURE_CONTAINER_INVALID", `${label} is not unpadded base64url`, 1);
   }
-  try { return Buffer.from(value, "base64url"); }
+  try {
+    const raw = Buffer.from(value, "base64url");
+    if (raw.toString("base64url") !== value) throw new Error("non-canonical base64url");
+    return raw;
+  }
   catch (e: any) { throw new ValidationFault("ERR_SIGNATURE_CONTAINER_INVALID", `invalid ${label}: ${String(e?.message || e)}`, 1); }
 }
 
@@ -371,7 +377,7 @@ function verifyDetachedJws(event: any, payload: string, keys: Map<string, any>):
   try {
     const keyObject = crypto.createPublicKey({ key: jwk, format: "jwk" });
     const signingInput = Buffer.from(`${protectedB64}.${b64u(Buffer.from(payload, "utf8"))}`, "ascii");
-    if (!crypto.verify(null, signingInput, keyObject, signature)) throw new Error("verification returned false");
+    if (!ed25519.verify(signature, signingInput, rawKey, { zip215: false }) || !crypto.verify(null, signingInput, keyObject, signature)) throw new Error("verification returned false");
   } catch {
     throw new ValidationFault("ERR_SIGNATURE_INVALID", "Ed25519 signature verification failed", 1);
   }
@@ -458,6 +464,8 @@ function validateEvent(event: any, keys: Map<string, any>, options: ValidateOpti
       if (event.when < now - options.maxAge) throw new ValidationFault("ERR_EVENT_EXPIRED", "event is older than the acceptance freshness window", 3);
       if (event.when > now + options.maxFutureSkew) throw new ValidationFault("ERR_TIMESTAMP_OUT_OF_WINDOW", "event timestamp is too far in the future", 3);
       if (!options.replayCache) throw new ValidationFault("ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "acceptance mode requires a persistent replay cache", 3);
+      fs.mkdirSync(resolveParent(options.replayCache), { recursive: true });
+      options.replayCache = fs.existsSync(options.replayCache) ? fs.realpathSync(options.replayCache) : path.join(fs.realpathSync(resolveParent(options.replayCache)), path.basename(options.replayCache));
       const existing = fs.existsSync(options.replayCache) ? loadJsonUnique(options.replayCache) : [];
       requireCondition(Array.isArray(existing) && existing.every((x: any) => typeof x === "string"), "ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "replay cache must be a JSON string array", 3);
       cache = new Set(existing);
@@ -467,11 +475,21 @@ function validateEvent(event: any, keys: Map<string, any>, options: ValidateOpti
     if (options.expectedAudience !== undefined && event.aud !== options.expectedAudience) throw new ValidationFault("ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "aud does not match the expected validation context", 4);
     processCriticalExtensions(event);
     if (cache && replayKey && options.replayCache) {
+      fs.mkdirSync(resolveParent(options.replayCache), { recursive: true });
+      const lockPath = `${options.replayCache}.consume-lock`;
+      try { fs.mkdirSync(lockPath, { mode: 0o700 }); }
+      catch { throw new ValidationFault("ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "replay cache is locked; retry after the active verifier completes", 3); }
+      try {
+      const current = fs.existsSync(options.replayCache) ? loadJsonUnique(options.replayCache) : [];
+      requireCondition(Array.isArray(current) && current.every((x: any) => typeof x === "string"), "ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "invalid replay cache", 3);
+      cache = new Set(current);
+      if (cache.has(replayKey)) throw new ValidationFault("ERR_NONCE_REPLAY", "nonce has already been accepted in this context", 3);
       cache.add(replayKey);
       const temporary = `${options.replayCache}.${process.pid}.tmp`;
       fs.mkdirSync(resolveParent(options.replayCache), { recursive: true });
       fs.writeFileSync(temporary, JSON.stringify([...cache].sort(), null, 2) + "\n", "utf8");
       fs.renameSync(temporary, options.replayCache);
+      } finally { fs.rmdirSync(lockPath); }
     }
     return makeResult(true, level, options.mode, profile, hash, scopes);
   } catch (e: any) {

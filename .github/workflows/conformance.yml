@@ -42,7 +42,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - working-directory: typescript-validator
-        run: npm install
+        run: npm ci
       - working-directory: typescript-validator
         run: npm run check
 
