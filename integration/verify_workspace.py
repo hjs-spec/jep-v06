@@ -227,8 +227,8 @@ func main() {
                 INPUT_JEP_API_URL=url,
                 INPUT_UPLOAD_ARTIFACT="false",
             )
-            standalone = temporary / "action.js"
-            shutil.copyfile(workspace / "jep-github-action/dist/index.js", standalone)
+            standalone = temporary / "action.mjs"
+            shutil.copyfile(workspace / "jep-github-action/dist/index.mjs", standalone)
             command([node, standalone], cwd=temporary, env=action_env)
             artifact = json.loads((temporary / "jep-event-artifact.json").read_text())
             assert artifact["validation"]["valid"] is True
