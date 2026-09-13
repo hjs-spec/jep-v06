@@ -47,7 +47,7 @@ jobs:
         run: npm run check
 
   go:
-    name: Go syntax verifier
+    name: Go conformance verifier
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -56,4 +56,22 @@ jobs:
           go-version: "1.23.x"
           cache-dependency-path: go-validator/go.mod
       - working-directory: go-validator
-        run: go test ./...
+        run: go test -race ./...
+
+  interop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: pip install -e '.[test]'
+      - run: npm ci && npm run build
+        working-directory: typescript-validator
+      - run: python -m pytest tests/test_replay_concurrency.py

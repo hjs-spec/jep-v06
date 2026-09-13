@@ -159,7 +159,7 @@ console.log('JS J/D/T/V passed');
             # Go decoding and re-encoding must retain every signed member.
             source = temporary / "roundtrip.go"
             source.write_text("""package main
-import ("encoding/json"; "os"; jep "github.com/hjs-spec/jep-sdk-go")
+import ("encoding/json"; "os"; jep "github.com/hjs-spec/sdk-go")
 func main() {
  var events []jep.JEPEvent
  if err := json.NewDecoder(os.Stdin).Decode(&events); err != nil { panic(err) }
@@ -179,11 +179,13 @@ func main() {
                 )
             )
             assert roundtrip == events
-            # Both reference validators consume the API's exact signed payloads.
+            # All three independent validators consume the API's exact signed payloads.
             with urllib.request.urlopen(url) as response:
                 public_key = json.load(response)["public_key"]
             keys = temporary / "keys.json"
             keys.write_text(json.dumps({public_key["kid"]: public_key}))
+            go_validator = temporary / "jep-validate"
+            command([go, "build", "-o", go_validator, "."], cwd=workspace / "jep-v06/go-validator")
             for index, event in enumerate(events):
                 path = temporary / f"event-{index}.json"
                 path.write_text(json.dumps(event, ensure_ascii=False))
@@ -210,9 +212,9 @@ func main() {
                         ]
                     )
                 )
-                assert (
-                    py["valid"] and ts["valid"] and py["event_hash"] == ts["event_hash"]
-                )
+                gv = json.loads(command([go_validator, "validate", path, "--keys", keys]))
+                assert py["valid"] and ts["valid"] and gv["valid"]
+                assert py["event_hash"] == ts["event_hash"] == gv["event_hash"]
             # Run the committed action entry point as an actual packaged action.
             action_env = dict(
                 environment,
@@ -257,7 +259,7 @@ func main() {
                 json.dumps(
                     {
                         "sdk_verb_checks": 12,
-                        "reference_validator_checks": 8,
+                        "reference_validator_checks": 12,
                         "packaged_action": "passed",
                         "restart_and_replay": "passed",
                     }

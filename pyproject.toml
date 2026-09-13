@@ -4,7 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jep-v06-conformance-seed"
-version = "0.6.1"
+version = "0.7.0"
+readme = "README.md"
 description = "JEP v0.6 draft-set conformance and interoperability seed"
 requires-python = ">=3.10"
 dependencies = [
@@ -17,7 +18,11 @@ dependencies = [
 test = ["pytest>=8"]
 
 [tool.setuptools]
-py-modules = []
+packages = ["jep_conformance"]
+package-dir = {jep_conformance = "reference-validator"}
+
+[project.scripts]
+jep-validate = "jep_conformance.jep_validate:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

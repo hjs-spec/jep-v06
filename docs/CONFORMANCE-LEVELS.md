@@ -40,3 +40,5 @@ Level 3 plus an explicitly named domain, organizational, legal, or regulatory po
 - A cryptographically valid event may be actor-binding or policy invalid.
 - Archival validity is distinct from real-time acceptance.
 - A successful reference-chain validation does not prove causality, external truth, complete logging, legal liability, or authorization validity.
+
+The Go validator now implements the shared baseline, explicit local actor binding, chain checks, and persistent acceptance replay checks. Its `syntax` command remains an explicit Level-0-only mode. See `go-validator/README.md`.

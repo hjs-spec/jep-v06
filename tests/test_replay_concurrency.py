@@ -17,6 +17,11 @@ def test_python_and_typescript_consumption_is_atomic(tmp_path):
                  str(VECTORS / "control-J.json"), "--keys", str(VECTORS / "public-keys.json")]]
     if ts.exists() and node:
         commands.append([node, str(ts), str(VECTORS / "control-J.json"), str(VECTORS / "public-keys.json")])
+    go = shutil.which("go")
+    if go:
+        binary = tmp_path / "jep-validate"
+        subprocess.run([go, "build", "-o", str(binary), "."], cwd=ROOT / "go-validator", check=True)
+        commands.append([str(binary), "validate", str(VECTORS / "control-J.json"), "--keys", str(VECTORS / "public-keys.json")])
     extra = ["--mode", "acceptance", "--now", "1788397200", "--replay-cache", str(tmp_path / "cache.json")]
     def run(i):
         process = subprocess.run(commands[i % len(commands)] + extra, capture_output=True, text=True, timeout=30)

@@ -479,7 +479,7 @@ func validateBytes(raw []byte) validationResult {
 	return resultFor(validateShape(object))
 }
 
-func main() {
+func syntaxMain() {
 	if len(os.Args) != 2 {
 		fmt.Fprintln(os.Stderr, "usage: go run jep_validate.go <event-or-vector.json>")
 		os.Exit(2)
