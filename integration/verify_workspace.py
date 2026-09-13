@@ -51,9 +51,13 @@ def main():
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
         url = f"http://127.0.0.1:{port}"
+        token = "integration-test-only"
+        token_file = temporary / "signing-token"
+        token_file.write_text(token)
         environment = dict(
             os.environ,
             JEP_STATE_DIR=str(temporary / "state"),
+            JEP_SIGNING_TOKEN_FILE=str(token_file),
             PYTHONDONTWRITEBYTECODE="1",
         )
 
@@ -91,7 +95,7 @@ def main():
 
         server = start()
         try:
-            client = JEPClient(base_url=url)
+            client = JEPClient(base_url=url, api_key=token)
             requests = [
                 {"verb": "J", "what": {"claim": "start", "\ue000": 1.0, "😀": 1e-7}},
                 {
@@ -146,7 +150,7 @@ def main():
                 + ";\n"
                 + """
 import fs from 'node:fs';
-const client = new JEPClient({baseUrl:process.argv[2]});
+const client = new JEPClient({baseUrl:process.argv[2],apiKey:"integration-test-only"});
 for (const request of JSON.parse(fs.readFileSync(process.argv[3], 'utf8'))) {
   const created = await client.createEvent(request);
   const result = await client.verifyEvent({event:created.event});
@@ -163,7 +167,7 @@ import ("encoding/json"; "os"; jep "github.com/hjs-spec/sdk-go")
 func main() {
  var events []jep.JEPEvent
  if err := json.NewDecoder(os.Stdin).Decode(&events); err != nil { panic(err) }
- client := jep.NewClientWithURL(os.Args[1], "")
+ client := jep.NewClientWithURL(os.Args[1], "integration-test-only")
  for _, event := range events {
   result, err := client.VerifyEvent(&jep.VerifyEventRequest{Event:event, Mode:"archival"})
   if err != nil { panic(err) }; if !result.Valid { panic("Go roundtrip failed verification") }
@@ -227,6 +231,7 @@ func main() {
                 GITHUB_REF="refs/heads/main",
                 INPUT_MODE="api",
                 INPUT_JEP_API_URL=url,
+                INPUT_JEP_API_TOKEN=token,
                 INPUT_UPLOAD_ARTIFACT="false",
             )
             standalone = temporary / "action.mjs"
