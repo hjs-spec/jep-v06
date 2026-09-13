@@ -56,6 +56,47 @@ If an environment previously installed packages sharing `jep`, upgrade the old R
 
 npm publication, live API/Hugging Face deployment and external database provisioning remain paused. Frozen protocol/comparison baselines retain their original pins.
 
+## Companion repositories resolved — 2026-09-13
+
+The organization inventory has 32 repositories (31 public and one private,
+including two archived historical repositories). The supplemental review of
+seven repositories outside the earlier 25 found concrete issues in HJS, JAC
+and the whitepaper entry page. These findings are now resolved:
+
+| Repository | Delivered correction | Merged PR |
+|---|---|---|
+| HJS 0.5 companion | Core 0.6 detached JWS and canonical hashes via the released validator; missing-reference rejection; repeatable archival and persistent atomic acceptance replay checks; offline receipt schema validation; copied immutable archive snapshots; explicit legacy signature reader | [hjs-05 #2](https://github.com/hjs-spec/hjs-05/pull/2), [#3](https://github.com/hjs-spec/hjs-05/pull/3) |
+| JAC 0.5 seed | RFC 8785 hashes; attach extensions before signing without mutating inputs; copied fragment exports; strict declaration/container/digest checks; declared-break handling; explicit historical hash verification and honest validation scope | [jac-agent-02 #1](https://github.com/hjs-spec/jac-agent-02/pull/1) |
+| Whitepaper entry | Repaired current protocol/API/validator links, corrected the implementation label and aligned the README notice with the existing CC0 license | [whitepaper #1](https://github.com/hjs-spec/whitepaper/pull/1) |
+
+Validation: HJS 46 tests and JAC 47 tests passed locally and in their PR CI;
+both post-merge workflows also passed. HJS CI includes bidirectional signature
+interoperability against the real API implementation pinned at
+`45082b3e9e9e81f35596311d6a686ae5fdae5427`. The existing HJS/APS canonical
+vectors still pass, and default discovery now includes the four previously
+omitted archive tests. Immutability compares canonical bytes, including the
+regression where Python conflates `1` with `true`. Local Gradio HTTP smoke
+verified all three actions;
+workflow syntax checks passed. Whitepaper changes affect only README.md;
+target repositories and the reference-validator path were checked directly.
+
+Verification scope remains explicit. HJS reports Core Level 1 with local
+reference availability; its demo receipt store is in memory, and retention or
+redaction metadata is not proof of enforcement. A receipt reports structure
+and optional event-hash binding, not signature authenticity. JAC validates
+extension declarations and can verify exported hash binding; it does not
+resolve/authenticate parent objects, prove authority or establish complete
+logging. Critical JAC extensions require a JAC-aware consumer, so rejection by
+the current Core-only API is expected. Demo placeholders are not signed Core
+events.
+
+Historical signed bytes, HJS/APS fixtures, JAC example/report bytes and the
+original whitepaper body and LICENSE are unchanged. The archived `jep-v0.4`
+and `hjs-v04` repositories, research corpus and frozen comparison baseline
+retain their historical contents and pins. No new release package, npm
+publication, Hugging Face upload or live API deployment was performed in this
+companion follow-up; the corrected source is available on main.
+
 ## Available GitHub versions
 
 | Repository | Version | Release |
