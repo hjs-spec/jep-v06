@@ -14,7 +14,7 @@ The remaining implementation work is merged. GitHub releases exist in 17 reposit
 
 | Repository | Version | Release |
 |---|---|---|
-| Agent-Blackbox | 0.2.0a1 | [Download](https://github.com/hjs-spec/Agent-Blackbox/releases/tag/v0.2.0a1) |
+| Agent-Blackbox | 0.2.0a2 | [Download](https://github.com/hjs-spec/Agent-Blackbox/releases/tag/v0.2.0a2) |
 | cli | 0.6.1 | [Download](https://github.com/hjs-spec/cli/releases/tag/v0.6.1) |
 | jep-agent-sdk | 1.0.1 | [Download](https://github.com/hjs-spec/jep-agent-sdk/releases/tag/v1.0.1) |
 | jep-api | 0.7.2 | [Download](https://github.com/hjs-spec/jep-api/releases/tag/v0.7.2) |
@@ -36,11 +36,13 @@ API container: `ghcr.io/hjs-spec/jep-api:0.7.2`. Its build/push workflow passed.
 
 ## Pending external configuration
 
-These steps were attempted and did not complete. Test CI passed; registry/deployment jobs report failures rather than concealing them.
+PyPI delivery now includes [jep-sdk-py 0.6.1](https://pypi.org/project/jep-sdk-py/0.6.1/), [jep-cli 0.6.1](https://pypi.org/project/jep-cli/0.6.1/), [jep-agent-sdk 1.0.1](https://pypi.org/project/jep-agent-sdk/1.0.1/), and [agent-blackbox-jep 0.2.0a2](https://pypi.org/project/agent-blackbox-jep/0.2.0a2/). Public registry files were checked against the GitHub release artifacts. The Blackbox distribution uses the owner's available suffixed name; its Python import remains `agent_blackbox`.
+
+The remaining steps below were attempted and did not complete. Test CI passed; registry/deployment jobs report failures rather than concealing them.
 
 | Target | Observed result | Required configuration |
 |---|---|---|
-| PyPI (13 Python distributions) | OIDC exchange rejected with `invalid-publisher` | Configure a trusted/pending publisher for each declared package: GitHub owner `hjs-spec`, the matching repository, workflow `release.yml`, no GitHub environment. Then rerun only the failed PyPI jobs. |
+| PyPI (9 remaining Python distributions) | OIDC exchange rejected with `invalid-publisher` | Configure a trusted/pending publisher for each remaining package: GitHub owner `hjs-spec`, the matching repository, workflow `release.yml`, no GitHub environment. Then rerun only the failed PyPI jobs. |
 | npm `@hjs-spec/jep-sdk-js` | Registry PUT rejected with `E404` after correcting the local tarball path | Confirm ownership/publish rights for the npm scope and package. Configure GitHub trusted publishing for `hjs-spec/sdk-js`, workflow `registry.yml` (and `release.yml` for future automatic versions). Then run `registry.yml`; it downloads the already released tarball. |
 | HF Space `yuqiangJEP/jep-api` | Deployment stopped before upload: `HF_TOKEN` is not configured in GitHub Actions | Add a Space-write token as the jep-api repository Actions secret `HF_TOKEN`, then provision the Space PostgreSQL and external signing settings described in DEPLOYMENT.md. Rerun the deployment job. |
 
@@ -50,15 +52,15 @@ Publisher configuration references: [PyPI pending projects](https://docs.pypi.or
 
 ## Recovery configuration to enter
 
-One failed job for each target was retried after the report: PyPI still returned `invalid-publisher`, npm still returned `E404`, and HF still reported the missing `HF_TOKEN`. Account configuration remains necessary. No successful registry publication or live deployment is implied by these retries.
+Initial retries returned PyPI `invalid-publisher`, npm `E404`, and missing HF_TOKEN. After the owner configured trusted publishers, the four PyPI distributions listed above were published successfully. The current npm recovery workflow reports `ENEEDAUTH` without credentials. No npm publication or live HF deployment is claimed.
 
 ### PyPI
 
-For projects not yet created, open [PyPI account publishing](https://pypi.org/manage/account/publishing/) and add a pending GitHub publisher for each row. For an existing project under your control, add the publisher in that project's Publishing settings. All rows use owner `hjs-spec`, workflow filename `release.yml`, and an empty environment field.
+For projects not yet created, open [PyPI account publishing](https://pypi.org/manage/account/publishing/) and add a pending GitHub publisher for each remaining row. The four published projects above are already configured. For an existing project under your control, add the publisher in that project's Publishing settings. All rows use owner `hjs-spec`, workflow filename `release.yml`, and an empty environment field. Add pending publishers in small batches and publish each batch before continuing if account registration limits are reached.
 
 | PyPI project name | GitHub repository | Version ready to publish |
 |---|---|---|
-| `agent-blackbox` | `Agent-Blackbox` | `0.2.0a1` |
+| `agent-blackbox-jep` | `Agent-Blackbox` | `0.2.0a2` |
 | `jep-cli` | `cli` | `0.6.1` |
 | `jep-agent-sdk` | `jep-agent-sdk` | `1.0.1` |
 | `jep-authority-runtime` | `jep-authority-runtime` | `0.1.1` |
