@@ -56,22 +56,22 @@ All 13 Python distributions are published. Public PyPI wheel and source-distribu
 
 The Blackbox distribution uses the owner's available suffixed name `agent-blackbox-jep`; its Python import remains `agent_blackbox`.
 
-## Pending external configuration
+## Registry blocker and deferred API deployment
 
-The remaining steps below were attempted and did not complete. Test CI passed; registry/deployment jobs report failures rather than concealing them.
+The owner has narrowed API delivery to the repository implementation aligned with JEP-Core-0.6. Live API deployment and external database provisioning are deferred. Implementation version `0.7.2` is a software version; the protocol profile remains `jep-core-0.6` with wire version `1`. npm publication remains blocked by account access. Historical workflow failures are retained as evidence.
 
-| Target | Observed result | Required configuration |
+| Target | Observed result | Next action |
 |---|---|---|
 | npm `@hjs-spec/jep-sdk-js` | Current recovery workflow reports `ENEEDAUTH` without credentials | Confirm ownership/publish rights for the npm scope and package. Configure GitHub trusted publishing for `hjs-spec/sdk-js`, workflow `registry.yml` (and `release.yml` for future automatic versions), or supply the supported repository secret `NPM_TOKEN` for initial publication. Then run `registry.yml`; it downloads the already released tarball. |
-| HF Space `yuqiangJEP/jep-api` | `HF_TOKEN` authenticates and can read Space configuration metadata; the read-only check reports missing production mode, PostgreSQL URL, signing token and keyring | Provision those Space settings as described in DEPLOYMENT.md. Run `check-hf.yml`, then run `deploy.yml` at current `main` after configuration. |
+| HF Space `yuqiangJEP/jep-api` | Repository code is updated for JEP-Core-0.6; live deployment is deferred by the owner | No deployment or database setup now. Configuration checks and deployment are manual-only workflows on `main`; code merges and implementation releases do not trigger them. |
 
 The connected Hugging Face account was confirmed as `yuqiangJEP`. Its OAuth scopes include repository read and Jobs access, not repository writes; connecting it did not grant Space deployment permission. The owner separately configured `HF_TOKEN` in GitHub Actions, and [the read-only configuration check](https://github.com/hjs-spec/jep-api/actions/runs/34740151251) authenticated successfully. It stopped on missing settings without uploading or restarting. The public Space remains on API 0.6.0; no live upgrade is claimed.
 
 Publisher configuration references: [PyPI pending projects](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/), [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/).
 
-## Recovery configuration to enter
+## Registry recovery and future deployment reference
 
-Initial retries returned PyPI `invalid-publisher`, npm `E404`, and missing HF_TOKEN. After the owner configured trusted publishers, all 13 PyPI distributions listed above were published successfully. The current npm recovery workflow reports `ENEEDAUTH` without credentials; npm setup is paused because the owner reports a login restriction. HF_TOKEN now authenticates, with the remaining Space configuration listed below. No npm publication or live HF deployment is claimed.
+Initial retries returned PyPI `invalid-publisher`, npm `E404`, and missing HF_TOKEN. After the owner configured trusted publishers, all 13 PyPI distributions listed above were published successfully. The current npm recovery workflow reports `ENEEDAUTH` without credentials; npm setup is paused because the owner reports a login restriction. HF_TOKEN now authenticates; the Space configuration below is retained only for a future deployment requested by the owner. No npm publication or live HF deployment is claimed.
 
 ### PyPI future releases
 
@@ -81,9 +81,9 @@ No Python package setup remains for the versions above. Each project now has its
 
 The account needs publish rights to the npm scope `@hjs-spec`. Configure trusted publishing for repository `hjs-spec/sdk-js`, workflows `registry.yml` and `release.yml`, empty environment, with direct **npm publish** allowed. If initial publication requires a token, the current workflows now accept the repository Actions secret `NPM_TOKEN` in the publish step. See the [exact recovery procedure](https://github.com/hjs-spec/sdk-js/blob/main/PUBLISHING.md). Use **Run workflow** on `registry.yml` at `main` after configuring the account so that the new credential handling is used.
 
-### Hugging Face
+### Hugging Face (deferred)
 
-`HF_TOKEN` is configured in [jep-api Actions secrets](https://github.com/hjs-spec/jep-api/settings/secrets/actions), and authenticated configuration reads passed. A new upload gate checks all required setting names before deployment; its 7 focused tests and the full API CI passed in [PR #5](https://github.com/hjs-spec/jep-api/pull/5). Secret contents and service connectivity still require startup/health validation. In the [Space settings](https://huggingface.co/spaces/yuqiangJEP/jep-api/settings), configure the four missing entries:
+`HF_TOKEN` is configured in [jep-api Actions secrets](https://github.com/hjs-spec/jep-api/settings/secrets/actions), and authenticated configuration reads passed. A new upload gate checks all required setting names before deployment; its 7 focused tests and the full API CI passed in [PR #5](https://github.com/hjs-spec/jep-api/pull/5). [PR #6](https://github.com/hjs-spec/jep-api/pull/6) makes configuration checks and deployment manual-only to honor the owner's code-only delivery scope. Secret contents and service connectivity still require startup/health validation. The following four [Space settings](https://huggingface.co/spaces/yuqiangJEP/jep-api/settings) are needed only when deployment resumes:
 
 | Setting | Type | Required value |
 |---|---|---|
@@ -92,7 +92,7 @@ The account needs publish rights to the npm scope `@hjs-spec`. Configure trusted
 | `JEP_KEYRING_JSON` | Secret | Existing external signing keyring, or use the documented Vault configuration |
 | `JEP_SIGNING_TOKEN` | Secret | API Bearer token required for signing and nonce consumption |
 
-Keyring generation, Vault alternatives and migration are documented in [API deployment instructions](https://github.com/hjs-spec/jep-api/blob/main/DEPLOYMENT.md). Configure these before deployment; a write token alone is insufficient for production startup. Run the read-only `check-hf.yml` workflow, then run `deploy.yml` at current `main` to use the new upload gate. Secrets belong in the account settings, never in commits or the chat.
+Keyring generation, Vault alternatives and migration are documented in [API deployment instructions](https://github.com/hjs-spec/jep-api/blob/main/DEPLOYMENT.md). When the owner resumes deployment, configure these first, manually run the read-only `check-hf.yml` workflow, then manually run `deploy.yml` at current `main`. Secrets belong in the account settings, never in commits or the chat.
 
 ## Compatibility limits
 
