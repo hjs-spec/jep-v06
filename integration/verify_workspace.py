@@ -159,7 +159,7 @@ console.log('JS J/D/T/V passed');
             # Go decoding and re-encoding must retain every signed member.
             source = temporary / "roundtrip.go"
             source.write_text("""package main
-import ("encoding/json"; "os"; jep "github.com/hjs-spec/jep-sdk-go")
+import ("encoding/json"; "os"; jep "github.com/hjs-spec/sdk-go")
 func main() {
  var events []jep.JEPEvent
  if err := json.NewDecoder(os.Stdin).Decode(&events); err != nil { panic(err) }
