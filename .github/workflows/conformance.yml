@@ -74,4 +74,4 @@ jobs:
       - run: pip install -e '.[test]'
       - run: npm ci && npm run build
         working-directory: typescript-validator
-      - run: pytest tests/test_replay_concurrency.py
+      - run: python -m pytest tests/test_replay_concurrency.py

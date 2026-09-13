@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install build twine pytest pytest-asyncio httpx -e .
-      - run: pytest tests -q
+      - run: python -m pytest tests -q
       - run: python -m build && twine check dist/*
       - uses: actions/setup-node@v4
         with:
