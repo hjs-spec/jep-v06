@@ -45,4 +45,12 @@ python reference-validator/jep_validate.py run-tests test-manifest.json
 
 Acceptance mode requires a persistent replay cache and applies configurable freshness and future-skew windows. Archival mode does not reject an event solely because its event timestamp is old.
 
+Replay contexts use `v2:` followed by four UTF-8 byte-length-prefixed strings
+(`length:value`): actor, audience (empty if absent), profile, and nonce. Python,
+TypeScript, and Go use the same encoding, including for Unicode and control
+characters. Existing delimiter-based entries remain effective and are preserved;
+an ambiguous old entry still fails closed. Upgrade all consumers of a shared
+cache together: older validators cannot recognize new entries. Keep the cache
+through the freshness window; do not clear it to perform the upgrade.
+
 Critical JEP extensions are accepted only when a concrete handler is implemented. Merely recognizing an extension identifier is not sufficient.

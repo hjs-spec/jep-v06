@@ -247,6 +247,14 @@ func extensions(event map[string]any) error {
 	return nil
 }
 func nonceContext(event map[string]any, p string) string {
+	var key strings.Builder
+	key.WriteString("v2:")
+	for _, value := range []string{str(event["who"]), str(event["aud"]), p, str(event["nonce"])} {
+		fmt.Fprintf(&key, "%d:%s", len(value), value)
+	}
+	return key.String()
+}
+func legacyNonceContext(event map[string]any, p string) string {
 	return strings.Join([]string{str(event["who"]), str(event["aud"]), p, str(event["nonce"])}, "\x1f")
 }
 func replayPath(path string) (string, error) {
@@ -268,7 +276,7 @@ func replayPath(path string) (string, error) {
 	}
 	return filepath.Join(real, filepath.Base(absolute)), nil
 }
-func consume(path, key string) error {
+func consume(path, key string, legacyKeys ...string) error {
 	path, err := replayPath(path)
 	if err != nil {
 		return err
@@ -296,6 +304,11 @@ func consume(path, key string) error {
 			}
 			if s == key {
 				return fail("ERR_NONCE_REPLAY", "nonce already consumed", 3)
+			}
+			for _, legacy := range legacyKeys {
+				if s == legacy {
+					return fail("ERR_NONCE_REPLAY", "nonce already consumed in legacy cache", 3)
+				}
 			}
 			values = append(values, s)
 		}
@@ -393,7 +406,7 @@ func eventResult(raw []byte, o options) validationResult {
 		return reject(err)
 	}
 	if o.Mode == "acceptance" {
-		if err = consume(o.Cache, nonceContext(event, r.Profile)); err != nil {
+		if err = consume(o.Cache, nonceContext(event, r.Profile), legacyNonceContext(event, r.Profile)); err != nil {
 			var f fault
 			if !errors.As(err, &f) {
 				err = fail("ERR_DOMAIN_REQUIREMENT_UNSATISFIED", "replay cache unavailable", 3)
